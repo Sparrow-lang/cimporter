@@ -1,0 +1,34 @@
+import "cimporter.spr"
+import std.ptr
+
+
+fun visitor(cursor: CXCursor, parent: CXCursor, clientData: CXClientData): CXChildVisitResult 
+    cout << "Testare!" << endl
+  
+    return CXChildVisit_Continue
+
+
+fun sprMain
+    var index: CXIndex
+    var transUnit: CXTranslationUnit
+    var cursor: CXCursor
+    var treeLevel: UInt = 0;
+
+    var file = CString("file.c")
+    index = clang_createIndex(0, 0)
+    transUnit = clang_parseTranslationUnit(index, mkPtr(file.front), Ptr(Ptr(Char))(), 0, Ptr(CXUnsavedFile)(), 0, CXTranslationUnit_DetailedPreprocessingRecord)
+
+    if transUnit isNull
+        cout << "parseTranslationUnit failed to initiliaze" << endl
+        return;
+
+    cursor = clang_getTranslationUnitCursor(transUnit)
+
+    // Visit AST Nodes
+    cout << "Vising AST Nodes" << endl
+    clang_visitChildren(cursor, \visitor, mkPtr(reinterpretCast(@Char, treeLevel)))
+
+    cout << "Finished visiting AST Nodes" << endl
+
+    clang_disposeTranslationUnit(transUnit)
+    clang_disposeIndex(index)

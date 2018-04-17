@@ -1,0 +1,36 @@
+import std.ptr
+import std.staticArray
+import std.function
+import "platform.spr"
+import "cxerrorcode.spr"
+import "cxstring.spr"
+import "buildSystem.spr"
+
+[native("clang_getBuildSessionTimestamp")]
+fun clang_getBuildSessionTimestamp: Int
+datatype CXVirtualFileOverlayImpl
+using CXVirtualFileOverlay = Ptr(CXVirtualFileOverlayImpl)
+[native("clang_VirtualFileOverlay_create")]
+fun clang_VirtualFileOverlay_create (sprArg0: Int): CXVirtualFileOverlay
+[native("clang_VirtualFileOverlay_addFileMapping")]
+fun clang_VirtualFileOverlay_addFileMapping (sprArg2: CXVirtualFileOverlay, sprArg1: Ptr(Char), sprArg0: Ptr(Char)): CXErrorCode
+[native("clang_VirtualFileOverlay_setCaseSensitivity")]
+fun clang_VirtualFileOverlay_setCaseSensitivity (sprArg1: CXVirtualFileOverlay, sprArg0: Int): CXErrorCode
+[native("clang_VirtualFileOverlay_writeToBuffer")]
+fun clang_VirtualFileOverlay_writeToBuffer (sprArg3: CXVirtualFileOverlay, sprArg2: Int, sprArg1: Ptr(Ptr(Char)), sprArg0: Ptr(Int)): CXErrorCode
+[native("clang_free")]
+fun clang_free (sprArg0: Ptr(Char))
+[native("clang_VirtualFileOverlay_dispose")]
+fun clang_VirtualFileOverlay_dispose (sprArg0: CXVirtualFileOverlay)
+datatype CXModuleMapDescriptorImpl
+using CXModuleMapDescriptor = Ptr(CXModuleMapDescriptorImpl)
+[native("clang_ModuleMapDescriptor_create")]
+fun clang_ModuleMapDescriptor_create (sprArg0: Int): CXModuleMapDescriptor
+[native("clang_ModuleMapDescriptor_setFrameworkModuleName")]
+fun clang_ModuleMapDescriptor_setFrameworkModuleName (sprArg1: CXModuleMapDescriptor, sprArg0: Ptr(Char)): CXErrorCode
+[native("clang_ModuleMapDescriptor_setUmbrellaHeader")]
+fun clang_ModuleMapDescriptor_setUmbrellaHeader (sprArg1: CXModuleMapDescriptor, sprArg0: Ptr(Char)): CXErrorCode
+[native("clang_ModuleMapDescriptor_writeToBuffer")]
+fun clang_ModuleMapDescriptor_writeToBuffer (sprArg3: CXModuleMapDescriptor, sprArg2: Int, sprArg1: Ptr(Ptr(Char)), sprArg0: Ptr(Int)): CXErrorCode
+[native("clang_ModuleMapDescriptor_dispose")]
+fun clang_ModuleMapDescriptor_dispose (sprArg0: CXModuleMapDescriptor)

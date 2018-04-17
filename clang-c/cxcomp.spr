@@ -1,0 +1,39 @@
+import std.ptr
+import std.staticArray
+import std.function
+
+using CXCompilationDatabase = Ptr(Char)
+using CXCompileCommands = Ptr(Char)
+using CXCompileCommand = Ptr(Char)
+using genSprVar0 = Int
+using CXCompilationDatabase_NoError = 0
+using CXCompilationDatabase_CanNotLoadDatabase = 1
+using CXCompilationDatabase_Error = genSprVar0
+[native("clang_CompilationDatabase_fromDirectory")]
+fun clang_CompilationDatabase_fromDirectory (sprArg1: Ptr(Char), sprArg0: Ptr(CXCompilationDatabase_Error)): CXCompilationDatabase
+[native("clang_CompilationDatabase_dispose")]
+fun clang_CompilationDatabase_dispose (sprArg0: CXCompilationDatabase)
+[native("clang_CompilationDatabase_getCompileCommands")]
+fun clang_CompilationDatabase_getCompileCommands (sprArg1: CXCompilationDatabase, sprArg0: Ptr(Char)): CXCompileCommands
+[native("clang_CompilationDatabase_getAllCompileCommands")]
+fun clang_CompilationDatabase_getAllCompileCommands (sprArg0: CXCompilationDatabase): CXCompileCommands
+[native("clang_CompileCommands_dispose")]
+fun clang_CompileCommands_dispose (sprArg0: CXCompileCommands)
+[native("clang_CompileCommands_getSize")]
+fun clang_CompileCommands_getSize (sprArg0: CXCompileCommands): Int
+[native("clang_CompileCommands_getCommand")]
+fun clang_CompileCommands_getCommand (sprArg1: CXCompileCommands, sprArg0: Int): CXCompileCommand
+[native("clang_CompileCommand_getDirectory")]
+fun clang_CompileCommand_getDirectory (sprArg0: CXCompileCommand): CXString
+[native("clang_CompileCommand_getFilename")]
+fun clang_CompileCommand_getFilename (sprArg0: CXCompileCommand): CXString
+[native("clang_CompileCommand_getNumArgs")]
+fun clang_CompileCommand_getNumArgs (sprArg0: CXCompileCommand): Int
+[native("clang_CompileCommand_getArg")]
+fun clang_CompileCommand_getArg (sprArg1: CXCompileCommand, sprArg0: Int): CXString
+[native("clang_CompileCommand_getNumMappedSources")]
+fun clang_CompileCommand_getNumMappedSources (sprArg0: CXCompileCommand): Int
+[native("clang_CompileCommand_getMappedSourcePath")]
+fun clang_CompileCommand_getMappedSourcePath (sprArg1: CXCompileCommand, sprArg0: Int): CXString
+[native("clang_CompileCommand_getMappedSourceContent")]
+fun clang_CompileCommand_getMappedSourceContent (sprArg1: CXCompileCommand, sprArg0: Int): CXString

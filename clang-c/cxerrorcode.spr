@@ -1,0 +1,10 @@
+import std.ptr
+import std.staticArray
+import std.function
+
+using CXErrorCode = Int
+using CXError_Success = 0
+using CXError_Failure = 1
+using CXError_Crashed = 2
+using CXError_InvalidArguments = 3
+using CXError_ASTReadError = 4

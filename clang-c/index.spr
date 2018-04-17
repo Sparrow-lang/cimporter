@@ -1,0 +1,1456 @@
+import std.ptr
+import std.staticArray
+import std.function
+import sprCore.functionPtr
+import "platform.spr"
+import "cxerrorcode.spr"
+import "cxstring.spr"
+import "buildSystem.spr"
+import "helper.spr"
+
+using Void = Int
+
+using CINDEX_VERSION_MAJOR = 0
+using CINDEX_VERSION_MINOR = 43
+//using CINDEX_VERSION = CINDEX_VERSION_ENCODE
+//using CINDEX_VERSION_STRING = CINDEX_VERSION_STRINGIZE
+using CXIndex = Ptr(Char)
+// Ptr(char) -- > UntypedPtr
+datatype CXTargetInfoImpl
+using CXTargetInfo = Ptr(CXTargetInfoImpl)
+using CXTranslationUnit = Ptr(CXTranslationUnitImpl)
+using CXClientData = Ptr(Char)
+datatype CXUnsavedFile
+    Filename : Ptr(Char)
+    Contents : Ptr(Char)
+    Length : Int
+using CXAvailabilityKind = Int
+using CXAvailability_Available = 0
+using CXAvailability_Deprecated = 1
+using CXAvailability_NotAvailable = 2
+using CXAvailability_NotAccessible = 3
+datatype CXVersion
+    Major : Int
+    Minor : Int
+    Subminor : Int
+using CXVersion = CXVersion
+using CXCursor_ExceptionSpecificationKind = Int
+using CXCursor_ExceptionSpecificationKind_None = 0
+using CXCursor_ExceptionSpecificationKind_DynamicNone = 1
+using CXCursor_ExceptionSpecificationKind_Dynamic = 2
+using CXCursor_ExceptionSpecificationKind_MSAny = 3
+using CXCursor_ExceptionSpecificationKind_BasicNoexcept = 4
+using CXCursor_ExceptionSpecificationKind_ComputedNoexcept = 5
+using CXCursor_ExceptionSpecificationKind_Unevaluated = 6
+using CXCursor_ExceptionSpecificationKind_Uninstantiated = 7
+using CXCursor_ExceptionSpecificationKind_Unparsed = 8
+[native("clang_createIndex")]
+fun clang_createIndex (sprArg1: Int, sprArg0: Int): CXIndex
+[native("clang_disposeIndex")]
+fun clang_disposeIndex (sprArg0: CXIndex)
+using genSprVar0 = Int
+using CXGlobalOpt_None = 0
+using CXGlobalOpt_ThreadBackgroundPriorityForIndexing = 1
+using CXGlobalOpt_ThreadBackgroundPriorityForEditing = 2
+using CXGlobalOpt_ThreadBackgroundPriorityForAll = 3
+using CXGlobalOptFlags = genSprVar0
+[native("clang_CXIndex_setGlobalOptions")]
+fun clang_CXIndex_setGlobalOptions (sprArg1: CXIndex, sprArg0: Int)
+[native("clang_CXIndex_getGlobalOptions")]
+fun clang_CXIndex_getGlobalOptions (sprArg0: CXIndex): Int
+using CXFile = Ptr(Char)
+[native("clang_getFileName")]
+fun clang_getFileName (sprArg0: CXFile): CXString
+//[native("clang_getFileTime")]
+//fun clang_getFileTime (sprArg0: CXFile): time_t
+datatype genSprVar1a
+    data : StaticArray(Int, 3)
+using CXFileUniqueID = genSprVar1a
+[native("clang_getFileUniqueID")]
+fun clang_getFileUniqueID (sprArg1: CXFile, sprArg0: Ptr(CXFileUniqueID)): Int
+[native("clang_isFileMultipleIncludeGuarded")]
+fun clang_isFileMultipleIncludeGuarded (sprArg1: CXTranslationUnit, sprArg0: CXFile): Int
+[native("clang_getFile")]
+fun clang_getFile (sprArg1: CXTranslationUnit, sprArg0: Ptr(Char)): CXFile
+[native("clang_File_isEqual")]
+fun clang_File_isEqual (sprArg1: CXFile, sprArg0: CXFile): Int
+datatype genSprVar2
+    ptr_data : StaticArray(Ptr(Char), 2)
+    int_data : Int
+using CXSourceLocation = genSprVar2
+datatype genSprVar3
+    ptr_data : StaticArray(Ptr(Char), 2)
+    begin_int_data : Int
+    end_int_data : Int
+using CXSourceRange = genSprVar3
+[native("clang_getNullLocation")]
+fun clang_getNullLocation: CXSourceLocation
+[native("clang_equalLocations")]
+fun clang_equalLocations (sprArg1: CXSourceLocation, sprArg0: CXSourceLocation): Int
+[native("clang_getLocation")]
+fun clang_getLocation (sprArg3: CXTranslationUnit, sprArg2: CXFile, sprArg1: Int, sprArg0: Int): CXSourceLocation
+[native("clang_getLocationForOffset")]
+fun clang_getLocationForOffset (sprArg2: CXTranslationUnit, sprArg1: CXFile, sprArg0: Int): CXSourceLocation
+[native("clang_Location_isInSystemHeader")]
+fun clang_Location_isInSystemHeader (sprArg0: CXSourceLocation): Int
+[native("clang_Location_isFromMainFile")]
+fun clang_Location_isFromMainFile (sprArg0: CXSourceLocation): Int
+[native("clang_getNullRange")]
+fun clang_getNullRange: CXSourceRange
+[native("clang_getRange")]
+fun clang_getRange (sprArg1: CXSourceLocation, sprArg0: CXSourceLocation): CXSourceRange
+[native("clang_equalRanges")]
+fun clang_equalRanges (sprArg1: CXSourceRange, sprArg0: CXSourceRange): Int
+[native("clang_Range_isNull")]
+fun clang_Range_isNull (sprArg0: CXSourceRange): Int
+[native("clang_getExpansionLocation")]
+fun clang_getExpansionLocation (sprArg4: CXSourceLocation, sprArg3: Ptr(CXFile), sprArg2: Ptr(Int), sprArg1: Ptr(Int), sprArg0: Ptr(Int))
+[native("clang_getPresumedLocation")]
+fun clang_getPresumedLocation (sprArg3: CXSourceLocation, sprArg2: Ptr(CXString), sprArg1: Ptr(Int), sprArg0: Ptr(Int))
+[native("clang_getInstantiationLocation")]
+fun clang_getInstantiationLocation (sprArg4: CXSourceLocation, sprArg3: Ptr(CXFile), sprArg2: Ptr(Int), sprArg1: Ptr(Int), sprArg0: Ptr(Int))
+[native("clang_getSpellingLocation")]
+fun clang_getSpellingLocation (sprArg4: CXSourceLocation, sprArg3: Ptr(CXFile), sprArg2: Ptr(Int), sprArg1: Ptr(Int), sprArg0: Ptr(Int))
+[native("clang_getFileLocation")]
+fun clang_getFileLocation (sprArg4: CXSourceLocation, sprArg3: Ptr(CXFile), sprArg2: Ptr(Int), sprArg1: Ptr(Int), sprArg0: Ptr(Int))
+[native("clang_getRangeStart")]
+fun clang_getRangeStart (sprArg0: CXSourceRange): CXSourceLocation
+[native("clang_getRangeEnd")]
+fun clang_getRangeEnd (sprArg0: CXSourceRange): CXSourceLocation
+datatype genSprVar4
+    count : Int
+    ranges : Ptr(CXSourceRange)
+using CXSourceRangeList = genSprVar4
+[native("clang_getSkippedRanges")]
+fun clang_getSkippedRanges (sprArg1: CXTranslationUnit, sprArg0: CXFile): Ptr(CXSourceRangeList)
+[native("clang_getAllSkippedRanges")]
+fun clang_getAllSkippedRanges (sprArg0: CXTranslationUnit): Ptr(CXSourceRangeList)
+[native("clang_disposeSourceRangeList")]
+fun clang_disposeSourceRangeList (sprArg0: Ptr(CXSourceRangeList))
+using CXDiagnosticSeverity = Int
+using CXDiagnostic_Ignored = 0
+using CXDiagnostic_Note = 1
+using CXDiagnostic_Warning = 2
+using CXDiagnostic_Error = 3
+using CXDiagnostic_Fatal = 4
+using CXDiagnostic = Ptr(Char)
+using CXDiagnosticSet = Ptr(Char)
+[native("clang_getNumDiagnosticsInSet")]
+fun clang_getNumDiagnosticsInSet (sprArg0: CXDiagnosticSet): Int
+[native("clang_getDiagnosticInSet")]
+fun clang_getDiagnosticInSet (sprArg1: CXDiagnosticSet, sprArg0: Int): CXDiagnostic
+using CXLoadDiag_Error = Int
+using CXLoadDiag_None = 0
+using CXLoadDiag_Unknown = 1
+using CXLoadDiag_CannotLoad = 2
+using CXLoadDiag_InvalidFile = 3
+[native("clang_loadDiagnostics")]
+fun clang_loadDiagnostics (sprArg2: Ptr(Char), sprArg1: Ptr(CXLoadDiag_Error), sprArg0: Ptr(CXString)): CXDiagnosticSet
+[native("clang_disposeDiagnosticSet")]
+fun clang_disposeDiagnosticSet (sprArg0: CXDiagnosticSet)
+[native("clang_getChildDiagnostics")]
+fun clang_getChildDiagnostics (sprArg0: CXDiagnostic): CXDiagnosticSet
+[native("clang_getNumDiagnostics")]
+fun clang_getNumDiagnostics (sprArg0: CXTranslationUnit): Int
+[native("clang_getDiagnostic")]
+fun clang_getDiagnostic (sprArg1: CXTranslationUnit, sprArg0: Int): CXDiagnostic
+[native("clang_getDiagnosticSetFromTU")]
+fun clang_getDiagnosticSetFromTU (sprArg0: CXTranslationUnit): CXDiagnosticSet
+[native("clang_disposeDiagnostic")]
+fun clang_disposeDiagnostic (sprArg0: CXDiagnostic)
+using CXDiagnosticDisplayOptions = Int
+using CXDiagnostic_DisplaySourceLocation = 1
+using CXDiagnostic_DisplayColumn = 2
+using CXDiagnostic_DisplaySourceRanges = 4
+using CXDiagnostic_DisplayOption = 8
+using CXDiagnostic_DisplayCategoryId = 16
+using CXDiagnostic_DisplayCategoryName = 32
+[native("clang_formatDiagnostic")]
+fun clang_formatDiagnostic (sprArg1: CXDiagnostic, sprArg0: Int): CXString
+[native("clang_defaultDiagnosticDisplayOptions")]
+fun clang_defaultDiagnosticDisplayOptions: Int
+[native("clang_getDiagnosticSeverity")]
+fun clang_getDiagnosticSeverity (sprArg0: CXDiagnostic): CXDiagnosticSeverity
+[native("clang_getDiagnosticLocation")]
+fun clang_getDiagnosticLocation (sprArg0: CXDiagnostic): CXSourceLocation
+[native("clang_getDiagnosticSpelling")]
+fun clang_getDiagnosticSpelling (sprArg0: CXDiagnostic): CXString
+[native("clang_getDiagnosticOption")]
+fun clang_getDiagnosticOption (sprArg1: CXDiagnostic, sprArg0: Ptr(CXString)): CXString
+[native("clang_getDiagnosticCategory")]
+fun clang_getDiagnosticCategory (sprArg0: CXDiagnostic): Int
+[native("clang_getDiagnosticCategoryName")]
+fun clang_getDiagnosticCategoryName (sprArg0: Int): CXString
+[native("clang_getDiagnosticCategoryText")]
+fun clang_getDiagnosticCategoryText (sprArg0: CXDiagnostic): CXString
+[native("clang_getDiagnosticNumRanges")]
+fun clang_getDiagnosticNumRanges (sprArg0: CXDiagnostic): Int
+[native("clang_getDiagnosticRange")]
+fun clang_getDiagnosticRange (sprArg1: CXDiagnostic, sprArg0: Int): CXSourceRange
+[native("clang_getDiagnosticNumFixIts")]
+fun clang_getDiagnosticNumFixIts (sprArg0: CXDiagnostic): Int
+[native("clang_getDiagnosticFixIt")]
+fun clang_getDiagnosticFixIt (sprArg2: CXDiagnostic, sprArg1: Int, sprArg0: Ptr(CXSourceRange)): CXString
+[native("clang_getTranslationUnitSpelling")]
+fun clang_getTranslationUnitSpelling (sprArg0: CXTranslationUnit): CXString
+[native("clang_createTranslationUnitFromSourceFile")]
+fun clang_createTranslationUnitFromSourceFile (sprArg5: CXIndex, sprArg4: Ptr(Char), sprArg3: Int, sprArg2: Ptr(Ptr(Char)), sprArg1: Int, sprArg0: Ptr(CXUnsavedFile)): CXTranslationUnit
+[native("clang_createTranslationUnit")]
+fun clang_createTranslationUnit (sprArg1: CXIndex, sprArg0: Ptr(Char)): CXTranslationUnit
+[native("clang_createTranslationUnit2")]
+fun clang_createTranslationUnit2 (sprArg2: CXIndex, sprArg1: Ptr(Char), sprArg0: Ptr(CXTranslationUnit)): CXErrorCode
+using CXTranslationUnit_Flags = Int
+using CXTranslationUnit_None = 0
+using CXTranslationUnit_DetailedPreprocessingRecord = 1
+using CXTranslationUnit_Incomplete = 2
+using CXTranslationUnit_PrecompiledPreamble = 4
+using CXTranslationUnit_CacheCompletionResults = 8
+using CXTranslationUnit_ForSerialization = 16
+using CXTranslationUnit_CXXChainedPCH = 32
+using CXTranslationUnit_SkipFunctionBodies = 64
+using CXTranslationUnit_IncludeBriefCommentsInCodeCompletion = 128
+using CXTranslationUnit_CreatePreambleOnFirstParse = 256
+using CXTranslationUnit_KeepGoing = 512
+using CXTranslationUnit_SingleFileParse = 1024
+[native("clang_defaultEditingTranslationUnitOptions")]
+fun clang_defaultEditingTranslationUnitOptions: Int
+[native("clang_parseTranslationUnit")]
+fun clang_parseTranslationUnit (sprArg6: CXIndex, sprArg5: Ptr(Char), sprArg4: Ptr(Ptr(Char)), sprArg3: Int, sprArg2: Ptr(CXUnsavedFile), sprArg1: Int, sprArg0: Int): CXTranslationUnit
+[native("clang_parseTranslationUnit2")]
+fun clang_parseTranslationUnit2 (sprArg7: CXIndex, sprArg6: Ptr(Char), sprArg5: Ptr(Ptr(Char)), sprArg4: Int, sprArg3: Ptr(CXUnsavedFile), sprArg2: Int, sprArg1: Int, sprArg0: Ptr(CXTranslationUnit)): CXErrorCode
+[native("clang_parseTranslationUnit2FullArgv")]
+fun clang_parseTranslationUnit2FullArgv (sprArg7: CXIndex, sprArg6: Ptr(Char), sprArg5: Ptr(Ptr(Char)), sprArg4: Int, sprArg3: Ptr(CXUnsavedFile), sprArg2: Int, sprArg1: Int, sprArg0: Ptr(CXTranslationUnit)): CXErrorCode
+using CXSaveTranslationUnit_Flags = Int
+using CXSaveTranslationUnit_None = 0
+[native("clang_defaultSaveOptions")]
+fun clang_defaultSaveOptions (sprArg0: CXTranslationUnit): Int
+using CXSaveError = Int
+using CXSaveError_None = 0
+using CXSaveError_Unknown = 1
+using CXSaveError_TranslationErrors = 2
+using CXSaveError_InvalidTU = 3
+[native("clang_saveTranslationUnit")]
+fun clang_saveTranslationUnit (sprArg2: CXTranslationUnit, sprArg1: Ptr(Char), sprArg0: Int): Int
+[native("clang_suspendTranslationUnit")]
+fun clang_suspendTranslationUnit (sprArg0: CXTranslationUnit): Int
+[native("clang_disposeTranslationUnit")]
+fun clang_disposeTranslationUnit (sprArg0: CXTranslationUnit)
+using CXReparse_Flags = Int
+using CXReparse_None = 0
+[native("clang_defaultReparseOptions")]
+fun clang_defaultReparseOptions (sprArg0: CXTranslationUnit): Int
+[native("clang_reparseTranslationUnit")]
+fun clang_reparseTranslationUnit (sprArg3: CXTranslationUnit, sprArg2: Int, sprArg1: Ptr(CXUnsavedFile), sprArg0: Int): Int
+using CXTUResourceUsageKind = Int
+using CXTUResourceUsage_AST = 1
+using CXTUResourceUsage_Identifiers = 2
+using CXTUResourceUsage_Selectors = 3
+using CXTUResourceUsage_GlobalCompletionResults = 4
+using CXTUResourceUsage_SourceManagerContentCache = 5
+using CXTUResourceUsage_AST_SideTables = 6
+using CXTUResourceUsage_SourceManager_Membuffer_Malloc = 7
+using CXTUResourceUsage_SourceManager_Membuffer_MMap = 8
+using CXTUResourceUsage_ExternalASTSource_Membuffer_Malloc = 9
+using CXTUResourceUsage_ExternalASTSource_Membuffer_MMap = 10
+using CXTUResourceUsage_Preprocessor = 11
+using CXTUResourceUsage_PreprocessingRecord = 12
+using CXTUResourceUsage_SourceManager_DataStructures = 13
+using CXTUResourceUsage_Preprocessor_HeaderSearch = 14
+using CXTUResourceUsage_MEMORY_IN_BYTES_BEGIN = 1
+using CXTUResourceUsage_MEMORY_IN_BYTES_END = 14
+using CXTUResourceUsage_First = 1
+using CXTUResourceUsage_Last = 14
+[native("clang_getTUResourceUsageName")]
+fun clang_getTUResourceUsageName (sprArg0: CXTUResourceUsageKind): Ptr(Char)
+datatype CXTUResourceUsageEntry
+    kind : CXTUResourceUsageKind
+    amount : Int
+using CXTUResourceUsageEntry = CXTUResourceUsageEntry
+datatype CXTUResourceUsage
+    data : Ptr(Char)
+    numEntries : Int
+    entries : Ptr(CXTUResourceUsageEntry)
+using CXTUResourceUsage = CXTUResourceUsage
+[native("clang_getCXTUResourceUsage")]
+fun clang_getCXTUResourceUsage (sprArg0: CXTranslationUnit): CXTUResourceUsage
+[native("clang_disposeCXTUResourceUsage")]
+fun clang_disposeCXTUResourceUsage (sprArg0: CXTUResourceUsage)
+[native("clang_getTranslationUnitTargetInfo")]
+fun clang_getTranslationUnitTargetInfo (sprArg0: CXTranslationUnit): CXTargetInfo
+[native("clang_TargetInfo_dispose")]
+fun clang_TargetInfo_dispose (sprArg0: CXTargetInfo)
+[native("clang_TargetInfo_getTriple")]
+fun clang_TargetInfo_getTriple (sprArg0: CXTargetInfo): CXString
+[native("clang_TargetInfo_getPointerWidth")]
+fun clang_TargetInfo_getPointerWidth (sprArg0: CXTargetInfo): Int
+using CXCursorKind = Int
+using CXCursor_UnexposedDecl = 1
+using CXCursor_StructDecl = 2
+using CXCursor_UnionDecl = 3
+using CXCursor_ClassDecl = 4
+using CXCursor_EnumDecl = 5
+using CXCursor_FieldDecl = 6
+using CXCursor_EnumConstantDecl = 7
+using CXCursor_FunctionDecl = 8
+using CXCursor_VarDecl = 9
+using CXCursor_ParmDecl = 10
+using CXCursor_ObjCInterfaceDecl = 11
+using CXCursor_ObjCCategoryDecl = 12
+using CXCursor_ObjCProtocolDecl = 13
+using CXCursor_ObjCPropertyDecl = 14
+using CXCursor_ObjCIvarDecl = 15
+using CXCursor_ObjCInstanceMethodDecl = 16
+using CXCursor_ObjCClassMethodDecl = 17
+using CXCursor_ObjCImplementationDecl = 18
+using CXCursor_ObjCCategoryImplDecl = 19
+using CXCursor_TypedefDecl = 20
+using CXCursor_CXXMethod = 21
+using CXCursor_Namespace = 22
+using CXCursor_LinkageSpec = 23
+using CXCursor_Constructor = 24
+using CXCursor_Destructor = 25
+using CXCursor_ConversionFunction = 26
+using CXCursor_TemplateTypeParameter = 27
+using CXCursor_NonTypeTemplateParameter = 28
+using CXCursor_TemplateTemplateParameter = 29
+using CXCursor_FunctionTemplate = 30
+using CXCursor_ClassTemplate = 31
+using CXCursor_ClassTemplatePartialSpecialization = 32
+using CXCursor_NamespaceAlias = 33
+using CXCursor_UsingDirective = 34
+using CXCursor_UsingDeclaration = 35
+using CXCursor_TypeAliasDecl = 36
+using CXCursor_ObjCSynthesizeDecl = 37
+using CXCursor_ObjCDynamicDecl = 38
+using CXCursor_CXXAccessSpecifier = 39
+using CXCursor_FirstDecl = 1
+using CXCursor_LastDecl = 39
+using CXCursor_FirstRef = 40
+using CXCursor_ObjCSuperClassRef = 40
+using CXCursor_ObjCProtocolRef = 41
+using CXCursor_ObjCClassRef = 42
+using CXCursor_TypeRef = 43
+using CXCursor_CXXBaseSpecifier = 44
+using CXCursor_TemplateRef = 45
+using CXCursor_NamespaceRef = 46
+using CXCursor_MemberRef = 47
+using CXCursor_LabelRef = 48
+using CXCursor_OverloadedDeclRef = 49
+using CXCursor_VariableRef = 50
+using CXCursor_LastRef = 50
+using CXCursor_FirstInvalid = 70
+using CXCursor_InvalidFile = 70
+using CXCursor_NoDeclFound = 71
+using CXCursor_NotImplemented = 72
+using CXCursor_InvalidCode = 73
+using CXCursor_LastInvalid = 73
+using CXCursor_FirstExpr = 100
+using CXCursor_UnexposedExpr = 100
+using CXCursor_DeclRefExpr = 101
+using CXCursor_MemberRefExpr = 102
+using CXCursor_CallExpr = 103
+using CXCursor_ObjCMessageExpr = 104
+using CXCursor_BlockExpr = 105
+using CXCursor_IntegerLiteral = 106
+using CXCursor_FloatingLiteral = 107
+using CXCursor_ImaginaryLiteral = 108
+using CXCursor_StringLiteral = 109
+using CXCursor_CharacterLiteral = 110
+using CXCursor_ParenExpr = 111
+using CXCursor_UnaryOperator = 112
+using CXCursor_ArraySubscriptExpr = 113
+using CXCursor_BinaryOperator = 114
+using CXCursor_CompoundAssignOperator = 115
+using CXCursor_ConditionalOperator = 116
+using CXCursor_CStyleCastExpr = 117
+using CXCursor_CompoundLiteralExpr = 118
+using CXCursor_InitListExpr = 119
+using CXCursor_AddrLabelExpr = 120
+using CXCursor_StmtExpr = 121
+using CXCursor_GenericSelectionExpr = 122
+using CXCursor_GNUNullExpr = 123
+using CXCursor_CXXStaticCastExpr = 124
+using CXCursor_CXXDynamicCastExpr = 125
+using CXCursor_CXXReinterpretCastExpr = 126
+using CXCursor_CXXConstCastExpr = 127
+using CXCursor_CXXFunctionalCastExpr = 128
+using CXCursor_CXXTypeidExpr = 129
+using CXCursor_CXXBoolLiteralExpr = 130
+using CXCursor_CXXNullPtrLiteralExpr = 131
+using CXCursor_CXXThisExpr = 132
+using CXCursor_CXXThrowExpr = 133
+using CXCursor_CXXNewExpr = 134
+using CXCursor_CXXDeleteExpr = 135
+using CXCursor_UnaryExpr = 136
+using CXCursor_ObjCStringLiteral = 137
+using CXCursor_ObjCEncodeExpr = 138
+using CXCursor_ObjCSelectorExpr = 139
+using CXCursor_ObjCProtocolExpr = 140
+using CXCursor_ObjCBridgedCastExpr = 141
+using CXCursor_PackExpansionExpr = 142
+using CXCursor_SizeOfPackExpr = 143
+using CXCursor_LambdaExpr = 144
+using CXCursor_ObjCBoolLiteralExpr = 145
+using CXCursor_ObjCSelfExpr = 146
+using CXCursor_OMPArraySectionExpr = 147
+using CXCursor_ObjCAvailabilityCheckExpr = 148
+using CXCursor_LastExpr = 148
+using CXCursor_FirstStmt = 200
+using CXCursor_UnexposedStmt = 200
+using CXCursor_LabelStmt = 201
+using CXCursor_CompoundStmt = 202
+using CXCursor_CaseStmt = 203
+using CXCursor_DefaultStmt = 204
+using CXCursor_IfStmt = 205
+using CXCursor_SwitchStmt = 206
+using CXCursor_WhileStmt = 207
+using CXCursor_DoStmt = 208
+using CXCursor_ForStmt = 209
+using CXCursor_GotoStmt = 210
+using CXCursor_IndirectGotoStmt = 211
+using CXCursor_ContinueStmt = 212
+using CXCursor_BreakStmt = 213
+using CXCursor_ReturnStmt = 214
+using CXCursor_GCCAsmStmt = 215
+using CXCursor_AsmStmt = 215
+using CXCursor_ObjCAtTryStmt = 216
+using CXCursor_ObjCAtCatchStmt = 217
+using CXCursor_ObjCAtFinallyStmt = 218
+using CXCursor_ObjCAtThrowStmt = 219
+using CXCursor_ObjCAtSynchronizedStmt = 220
+using CXCursor_ObjCAutoreleasePoolStmt = 221
+using CXCursor_ObjCForCollectionStmt = 222
+using CXCursor_CXXCatchStmt = 223
+using CXCursor_CXXTryStmt = 224
+using CXCursor_CXXForRangeStmt = 225
+using CXCursor_SEHTryStmt = 226
+using CXCursor_SEHExceptStmt = 227
+using CXCursor_SEHFinallyStmt = 228
+using CXCursor_MSAsmStmt = 229
+using CXCursor_NullStmt = 230
+using CXCursor_DeclStmt = 231
+using CXCursor_OMPParallelDirective = 232
+using CXCursor_OMPSimdDirective = 233
+using CXCursor_OMPForDirective = 234
+using CXCursor_OMPSectionsDirective = 235
+using CXCursor_OMPSectionDirective = 236
+using CXCursor_OMPSingleDirective = 237
+using CXCursor_OMPParallelForDirective = 238
+using CXCursor_OMPParallelSectionsDirective = 239
+using CXCursor_OMPTaskDirective = 240
+using CXCursor_OMPMasterDirective = 241
+using CXCursor_OMPCriticalDirective = 242
+using CXCursor_OMPTaskyieldDirective = 243
+using CXCursor_OMPBarrierDirective = 244
+using CXCursor_OMPTaskwaitDirective = 245
+using CXCursor_OMPFlushDirective = 246
+using CXCursor_SEHLeaveStmt = 247
+using CXCursor_OMPOrderedDirective = 248
+using CXCursor_OMPAtomicDirective = 249
+using CXCursor_OMPForSimdDirective = 250
+using CXCursor_OMPParallelForSimdDirective = 251
+using CXCursor_OMPTargetDirective = 252
+using CXCursor_OMPTeamsDirective = 253
+using CXCursor_OMPTaskgroupDirective = 254
+using CXCursor_OMPCancellationPointDirective = 255
+using CXCursor_OMPCancelDirective = 256
+using CXCursor_OMPTargetDataDirective = 257
+using CXCursor_OMPTaskLoopDirective = 258
+using CXCursor_OMPTaskLoopSimdDirective = 259
+using CXCursor_OMPDistributeDirective = 260
+using CXCursor_OMPTargetEnterDataDirective = 261
+using CXCursor_OMPTargetExitDataDirective = 262
+using CXCursor_OMPTargetParallelDirective = 263
+using CXCursor_OMPTargetParallelForDirective = 264
+using CXCursor_OMPTargetUpdateDirective = 265
+using CXCursor_OMPDistributeParallelForDirective = 266
+using CXCursor_OMPDistributeParallelForSimdDirective = 267
+using CXCursor_OMPDistributeSimdDirective = 268
+using CXCursor_OMPTargetParallelForSimdDirective = 269
+using CXCursor_OMPTargetSimdDirective = 270
+using CXCursor_OMPTeamsDistributeDirective = 271
+using CXCursor_OMPTeamsDistributeSimdDirective = 272
+using CXCursor_OMPTeamsDistributeParallelForSimdDirective = 273
+using CXCursor_OMPTeamsDistributeParallelForDirective = 274
+using CXCursor_OMPTargetTeamsDirective = 275
+using CXCursor_OMPTargetTeamsDistributeDirective = 276
+using CXCursor_OMPTargetTeamsDistributeParallelForDirective = 277
+using CXCursor_OMPTargetTeamsDistributeParallelForSimdDirective = 278
+using CXCursor_OMPTargetTeamsDistributeSimdDirective = 279
+using CXCursor_LastStmt = 279
+using CXCursor_TranslationUnit = 300
+using CXCursor_FirstAttr = 400
+using CXCursor_UnexposedAttr = 400
+using CXCursor_IBActionAttr = 401
+using CXCursor_IBOutletAttr = 402
+using CXCursor_IBOutletCollectionAttr = 403
+using CXCursor_CXXFinalAttr = 404
+using CXCursor_CXXOverrideAttr = 405
+using CXCursor_AnnotateAttr = 406
+using CXCursor_AsmLabelAttr = 407
+using CXCursor_PackedAttr = 408
+using CXCursor_PureAttr = 409
+using CXCursor_ConstAttr = 410
+using CXCursor_NoDuplicateAttr = 411
+using CXCursor_CUDAConstantAttr = 412
+using CXCursor_CUDADeviceAttr = 413
+using CXCursor_CUDAGlobalAttr = 414
+using CXCursor_CUDAHostAttr = 415
+using CXCursor_CUDASharedAttr = 416
+using CXCursor_VisibilityAttr = 417
+using CXCursor_DLLExport = 418
+using CXCursor_DLLImport = 419
+using CXCursor_LastAttr = 419
+using CXCursor_PreprocessingDirective = 500
+using CXCursor_MacroDefinition = 501
+using CXCursor_MacroExpansion = 502
+using CXCursor_MacroInstantiation = 502
+using CXCursor_InclusionDirective = 503
+using CXCursor_FirstPreprocessing = 500
+using CXCursor_LastPreprocessing = 503
+using CXCursor_ModuleImportDecl = 600
+using CXCursor_TypeAliasTemplateDecl = 601
+using CXCursor_StaticAssert = 602
+using CXCursor_FriendDecl = 603
+using CXCursor_FirstExtraDecl = 600
+using CXCursor_LastExtraDecl = 603
+using CXCursor_OverloadCandidate = 700
+datatype genSprVar5
+    kind : CXCursorKind
+    xdata : Int
+    data : StaticArray(Ptr(Char), 3)
+using CXCursor = genSprVar5
+[native("clang_getNullCursor")]
+fun clang_getNullCursor: CXCursor
+[native("clang_getTranslationUnitCursor")]
+fun clang_getTranslationUnitCursor (sprArg0: CXTranslationUnit): CXCursor
+[native("clang_equalCursors")]
+fun clang_equalCursors (sprArg1: CXCursor, sprArg0: CXCursor): Int
+[native("clang_Cursor_isNull")]
+fun clang_Cursor_isNull (sprArg0: CXCursor): Int
+[native("clang_hashCursor")]
+fun clang_hashCursor (sprArg0: CXCursor): Int
+[native("clang_getCursorKind")]
+fun clang_getCursorKind (sprArg0: CXCursor): CXCursorKind
+[native("clang_isDeclaration")]
+fun clang_isDeclaration (sprArg0: CXCursorKind): Int
+[native("clang_isReference")]
+fun clang_isReference (sprArg0: CXCursorKind): Int
+[native("clang_isExpression")]
+fun clang_isExpression (sprArg0: CXCursorKind): Int
+[native("clang_isStatement")]
+fun clang_isStatement (sprArg0: CXCursorKind): Int
+[native("clang_isAttribute")]
+fun clang_isAttribute (sprArg0: CXCursorKind): Int
+[native("clang_Cursor_hasAttrs")]
+fun clang_Cursor_hasAttrs (sprArg0: CXCursor): Int
+[native("clang_isInvalid")]
+fun clang_isInvalid (sprArg0: CXCursorKind): Int
+[native("clang_isTranslationUnit")]
+fun clang_isTranslationUnit (sprArg0: CXCursorKind): Int
+[native("clang_isPreprocessing")]
+fun clang_isPreprocessing (sprArg0: CXCursorKind): Int
+[native("clang_isUnexposed")]
+fun clang_isUnexposed (sprArg0: CXCursorKind): Int
+using CXLinkageKind = Int
+using CXLinkage_Invalid = 0
+using CXLinkage_NoLinkage = 1
+using CXLinkage_Internal = 2
+using CXLinkage_UniqueExternal = 3
+using CXLinkage_External = 4
+[native("clang_getCursorLinkage")]
+fun clang_getCursorLinkage (sprArg0: CXCursor): CXLinkageKind
+using CXVisibilityKind = Int
+using CXVisibility_Invalid = 0
+using CXVisibility_Hidden = 1
+using CXVisibility_Protected = 2
+using CXVisibility_Default = 3
+[native("clang_getCursorVisibility")]
+fun clang_getCursorVisibility (sprArg0: CXCursor): CXVisibilityKind
+[native("clang_getCursorAvailability")]
+fun clang_getCursorAvailability (sprArg0: CXCursor): CXAvailabilityKind
+datatype CXPlatformAvailability
+    Platform : CXString
+    Introduced : CXVersion
+    Deprecated : CXVersion
+    Obsoleted : CXVersion
+    Unavailable : Int
+    Message : CXString
+using CXPlatformAvailability = CXPlatformAvailability
+[native("clang_getCursorPlatformAvailability")]
+fun clang_getCursorPlatformAvailability (sprArg6: CXCursor, sprArg5: Ptr(Int), sprArg4: Ptr(CXString), sprArg3: Ptr(Int), sprArg2: Ptr(CXString), sprArg1: Ptr(CXPlatformAvailability), sprArg0: Int): Int
+[native("clang_disposeCXPlatformAvailability")]
+fun clang_disposeCXPlatformAvailability (sprArg0: Ptr(CXPlatformAvailability))
+using CXLanguageKind = Int
+using CXLanguage_Invalid = 0
+using CXLanguage_C = 1
+using CXLanguage_ObjC = 2
+using CXLanguage_CPlusPlus = 3
+[native("clang_getCursorLanguage")]
+fun clang_getCursorLanguage (sprArg0: CXCursor): CXLanguageKind
+[native("clang_Cursor_getTranslationUnit")]
+fun clang_Cursor_getTranslationUnit (sprArg0: CXCursor): CXTranslationUnit
+datatype CXCursorSetImpl
+using CXCursorSet = Ptr(CXCursorSetImpl)
+[native("clang_createCXCursorSet")]
+fun clang_createCXCursorSet: CXCursorSet
+[native("clang_disposeCXCursorSet")]
+fun clang_disposeCXCursorSet (sprArg0: CXCursorSet)
+[native("clang_CXCursorSet_contains")]
+fun clang_CXCursorSet_contains (sprArg1: CXCursorSet, sprArg0: CXCursor): Int
+[native("clang_CXCursorSet_insert")]
+fun clang_CXCursorSet_insert (sprArg1: CXCursorSet, sprArg0: CXCursor): Int
+[native("clang_getCursorSemanticParent")]
+fun clang_getCursorSemanticParent (sprArg0: CXCursor): CXCursor
+[native("clang_getCursorLexicalParent")]
+fun clang_getCursorLexicalParent (sprArg0: CXCursor): CXCursor
+[native("clang_getOverriddenCursors")]
+fun clang_getOverriddenCursors (sprArg2: CXCursor, sprArg1: Ptr(Ptr(CXCursor)), sprArg0: Ptr(Int))
+[native("clang_disposeOverriddenCursors")]
+fun clang_disposeOverriddenCursors (sprArg0: Ptr(CXCursor))
+[native("clang_getIncludedFile")]
+fun clang_getIncludedFile (sprArg0: CXCursor): CXFile
+[native("clang_getCursor")]
+fun clang_getCursor (sprArg1: CXTranslationUnit, sprArg0: CXSourceLocation): CXCursor
+[native("clang_getCursorLocation")]
+fun clang_getCursorLocation (sprArg0: CXCursor): CXSourceLocation
+[native("clang_getCursorExtent")]
+fun clang_getCursorExtent (sprArg0: CXCursor): CXSourceRange
+using CXTypeKind = Int
+using CXType_Invalid = 0
+using CXType_Unexposed = 1
+using CXType_Void = 2
+using CXType_Bool = 3
+using CXType_Char_U = 4
+using CXType_UChar = 5
+using CXType_Char16 = 6
+using CXType_Char32 = 7
+using CXType_UShort = 8
+using CXType_UInt = 9
+using CXType_ULong = 10
+using CXType_ULongLong = 11
+using CXType_UInt128 = 12
+using CXType_Char_S = 13
+using CXType_SChar = 14
+using CXType_WChar = 15
+using CXType_Short = 16
+using CXType_Int = 17
+using CXType_Long = 18
+using CXType_LongLong = 19
+using CXType_Int128 = 20
+using CXType_Float = 21
+using CXType_Double = 22
+using CXType_LongDouble = 23
+using CXType_NullPtr = 24
+using CXType_Overload = 25
+using CXType_Dependent = 26
+using CXType_ObjCId = 27
+using CXType_ObjCClass = 28
+using CXType_ObjCSel = 29
+using CXType_Float128 = 30
+using CXType_Half = 31
+using CXType_FirstBuiltin = 2
+using CXType_LastBuiltin = 31
+using CXType_Complex = 100
+using CXType_Pointer = 101
+using CXType_BlockPointer = 102
+using CXType_LValueReference = 103
+using CXType_RValueReference = 104
+using CXType_Record = 105
+using CXType_Enum = 106
+using CXType_Typedef = 107
+using CXType_ObjCInterface = 108
+using CXType_ObjCObjectPointer = 109
+using CXType_FunctionNoProto = 110
+using CXType_FunctionProto = 111
+using CXType_ConstantArray = 112
+using CXType_Vector = 113
+using CXType_IncompleteArray = 114
+using CXType_VariableArray = 115
+using CXType_DependentSizedArray = 116
+using CXType_MemberPointer = 117
+using CXType_Auto = 118
+using CXType_Elaborated = 119
+using CXType_Pipe = 120
+using CXType_OCLImage1dRO = 121
+using CXType_OCLImage1dArrayRO = 122
+using CXType_OCLImage1dBufferRO = 123
+using CXType_OCLImage2dRO = 124
+using CXType_OCLImage2dArrayRO = 125
+using CXType_OCLImage2dDepthRO = 126
+using CXType_OCLImage2dArrayDepthRO = 127
+using CXType_OCLImage2dMSAARO = 128
+using CXType_OCLImage2dArrayMSAARO = 129
+using CXType_OCLImage2dMSAADepthRO = 130
+using CXType_OCLImage2dArrayMSAADepthRO = 131
+using CXType_OCLImage3dRO = 132
+using CXType_OCLImage1dWO = 133
+using CXType_OCLImage1dArrayWO = 134
+using CXType_OCLImage1dBufferWO = 135
+using CXType_OCLImage2dWO = 136
+using CXType_OCLImage2dArrayWO = 137
+using CXType_OCLImage2dDepthWO = 138
+using CXType_OCLImage2dArrayDepthWO = 139
+using CXType_OCLImage2dMSAAWO = 140
+using CXType_OCLImage2dArrayMSAAWO = 141
+using CXType_OCLImage2dMSAADepthWO = 142
+using CXType_OCLImage2dArrayMSAADepthWO = 143
+using CXType_OCLImage3dWO = 144
+using CXType_OCLImage1dRW = 145
+using CXType_OCLImage1dArrayRW = 146
+using CXType_OCLImage1dBufferRW = 147
+using CXType_OCLImage2dRW = 148
+using CXType_OCLImage2dArrayRW = 149
+using CXType_OCLImage2dDepthRW = 150
+using CXType_OCLImage2dArrayDepthRW = 151
+using CXType_OCLImage2dMSAARW = 152
+using CXType_OCLImage2dArrayMSAARW = 153
+using CXType_OCLImage2dMSAADepthRW = 154
+using CXType_OCLImage2dArrayMSAADepthRW = 155
+using CXType_OCLImage3dRW = 156
+using CXType_OCLSampler = 157
+using CXType_OCLEvent = 158
+using CXType_OCLQueue = 159
+using CXType_OCLReserveID = 160
+using CXCallingConv = Int
+using CXCallingConv_Default = 0
+using CXCallingConv_C = 1
+using CXCallingConv_X86StdCall = 2
+using CXCallingConv_X86FastCall = 3
+using CXCallingConv_X86ThisCall = 4
+using CXCallingConv_X86Pascal = 5
+using CXCallingConv_AAPCS = 6
+using CXCallingConv_AAPCS_VFP = 7
+using CXCallingConv_X86RegCall = 8
+using CXCallingConv_IntelOclBicc = 9
+using CXCallingConv_Win64 = 10
+using CXCallingConv_X86_64Win64 = 10
+using CXCallingConv_X86_64SysV = 11
+using CXCallingConv_X86VectorCall = 12
+using CXCallingConv_Swift = 13
+using CXCallingConv_PreserveMost = 14
+using CXCallingConv_PreserveAll = 15
+using CXCallingConv_Invalid = 100
+using CXCallingConv_Unexposed = 200
+datatype genSprVar6
+    kind : CXTypeKind
+    data : StaticArray(Ptr(Char), 2)
+using CXType = genSprVar6
+[native("clang_getCursorType")]
+fun clang_getCursorType (sprArg0: CXCursor): CXType
+[native("clang_getTypeSpelling")]
+fun clang_getTypeSpelling (sprArg0: CXType): CXString
+[native("clang_getTypedefDeclUnderlyingType")]
+fun clang_getTypedefDeclUnderlyingType (sprArg0: CXCursor): CXType
+[native("clang_getEnumDeclIntegerType")]
+fun clang_getEnumDeclIntegerType (sprArg0: CXCursor): CXType
+[native("clang_getEnumConstantDeclValue")]
+fun clang_getEnumConstantDeclValue (sprArg0: CXCursor): Int
+[native("clang_getEnumConstantDeclUnsignedValue")]
+fun clang_getEnumConstantDeclUnsignedValue (sprArg0: CXCursor): Int
+[native("clang_getFieldDeclBitWidth")]
+fun clang_getFieldDeclBitWidth (sprArg0: CXCursor): Int
+[native("clang_Cursor_getNumArguments")]
+fun clang_Cursor_getNumArguments (sprArg0: CXCursor): Int
+[native("clang_Cursor_getArgument")]
+fun clang_Cursor_getArgument (sprArg1: CXCursor, sprArg0: Int): CXCursor
+using CXTemplateArgumentKind = Int
+using CXTemplateArgumentKind_Null = 0
+using CXTemplateArgumentKind_Type = 1
+using CXTemplateArgumentKind_Declaration = 2
+using CXTemplateArgumentKind_NullPtr = 3
+using CXTemplateArgumentKind_Integral = 4
+using CXTemplateArgumentKind_Template = 5
+using CXTemplateArgumentKind_TemplateExpansion = 6
+using CXTemplateArgumentKind_Expression = 7
+using CXTemplateArgumentKind_Pack = 8
+using CXTemplateArgumentKind_Invalid = 9
+[native("clang_Cursor_getNumTemplateArguments")]
+fun clang_Cursor_getNumTemplateArguments (sprArg0: CXCursor): Int
+[native("clang_Cursor_getTemplateArgumentKind")]
+fun clang_Cursor_getTemplateArgumentKind (sprArg1: CXCursor, sprArg0: Int): CXTemplateArgumentKind
+[native("clang_Cursor_getTemplateArgumentType")]
+fun clang_Cursor_getTemplateArgumentType (sprArg1: CXCursor, sprArg0: Int): CXType
+[native("clang_Cursor_getTemplateArgumentValue")]
+fun clang_Cursor_getTemplateArgumentValue (sprArg1: CXCursor, sprArg0: Int): Int
+[native("clang_Cursor_getTemplateArgumentUnsignedValue")]
+fun clang_Cursor_getTemplateArgumentUnsignedValue (sprArg1: CXCursor, sprArg0: Int): Int
+[native("clang_equalTypes")]
+fun clang_equalTypes (sprArg1: CXType, sprArg0: CXType): Int
+[native("clang_getCanonicalType")]
+fun clang_getCanonicalType (sprArg0: CXType): CXType
+[native("clang_isConstQualifiedType")]
+fun clang_isConstQualifiedType (sprArg0: CXType): Int
+[native("clang_Cursor_isMacroFunctionLike")]
+fun clang_Cursor_isMacroFunctionLike (sprArg0: CXCursor): Int
+[native("clang_Cursor_isMacroBuiltin")]
+fun clang_Cursor_isMacroBuiltin (sprArg0: CXCursor): Int
+[native("clang_Cursor_isFunctionInlined")]
+fun clang_Cursor_isFunctionInlined (sprArg0: CXCursor): Int
+[native("clang_isVolatileQualifiedType")]
+fun clang_isVolatileQualifiedType (sprArg0: CXType): Int
+[native("clang_isRestrictQualifiedType")]
+fun clang_isRestrictQualifiedType (sprArg0: CXType): Int
+[native("clang_getAddressSpace")]
+fun clang_getAddressSpace (sprArg0: CXType): Int
+[native("clang_getTypedefName")]
+fun clang_getTypedefName (sprArg0: CXType): CXString
+[native("clang_getPointeeType")]
+fun clang_getPointeeType (sprArg0: CXType): CXType
+[native("clang_getTypeDeclaration")]
+fun clang_getTypeDeclaration (sprArg0: CXType): CXCursor
+[native("clang_getDeclObjCTypeEncoding")]
+fun clang_getDeclObjCTypeEncoding (sprArg0: CXCursor): CXString
+[native("clang_Type_getObjCEncoding")]
+fun clang_Type_getObjCEncoding (sprArg0: CXType): CXString
+[native("clang_getTypeKindSpelling")]
+fun clang_getTypeKindSpelling (sprArg0: CXTypeKind): CXString
+[native("clang_getFunctionTypeCallingConv")]
+fun clang_getFunctionTypeCallingConv (sprArg0: CXType): CXCallingConv
+[native("clang_getResultType")]
+fun clang_getResultType (sprArg0: CXType): CXType
+[native("clang_getExceptionSpecificationType")]
+fun clang_getExceptionSpecificationType (sprArg0: CXType): Int
+[native("clang_getNumArgTypes")]
+fun clang_getNumArgTypes (sprArg0: CXType): Int
+[native("clang_getArgType")]
+fun clang_getArgType (sprArg1: CXType, sprArg0: Int): CXType
+[native("clang_isFunctionTypeVariadic")]
+fun clang_isFunctionTypeVariadic (sprArg0: CXType): Int
+[native("clang_getCursorResultType")]
+fun clang_getCursorResultType (sprArg0: CXCursor): CXType
+[native("clang_getCursorExceptionSpecificationType")]
+fun clang_getCursorExceptionSpecificationType (sprArg0: CXCursor): Int
+[native("clang_isPODType")]
+fun clang_isPODType (sprArg0: CXType): Int
+[native("clang_getElementType")]
+fun clang_getElementType (sprArg0: CXType): CXType
+[native("clang_getNumElements")]
+fun clang_getNumElements (sprArg0: CXType): Int
+[native("clang_getArrayElementType")]
+fun clang_getArrayElementType (sprArg0: CXType): CXType
+[native("clang_getArraySize")]
+fun clang_getArraySize (sprArg0: CXType): Int
+[native("clang_Type_getNamedType")]
+fun clang_Type_getNamedType (sprArg0: CXType): CXType
+[native("clang_Type_isTransparentTagTypedef")]
+fun clang_Type_isTransparentTagTypedef (sprArg0: CXType): Int
+using CXTypeLayoutError = Int
+using CXTypeLayoutError_Invalid = -1
+using CXTypeLayoutError_Incomplete = -2
+using CXTypeLayoutError_Dependent = -3
+using CXTypeLayoutError_NotConstantSize = -4
+using CXTypeLayoutError_InvalidFieldName = -5
+[native("clang_Type_getAlignOf")]
+fun clang_Type_getAlignOf (sprArg0: CXType): Int
+[native("clang_Type_getClassType")]
+fun clang_Type_getClassType (sprArg0: CXType): CXType
+[native("clang_Type_getSizeOf")]
+fun clang_Type_getSizeOf (sprArg0: CXType): Int
+[native("clang_Type_getOffsetOf")]
+fun clang_Type_getOffsetOf (sprArg1: CXType, sprArg0: Ptr(Char)): Int
+[native("clang_Cursor_getOffsetOfField")]
+fun clang_Cursor_getOffsetOfField (sprArg0: CXCursor): Int
+[native("clang_Cursor_isAnonymous")]
+fun clang_Cursor_isAnonymous (sprArg0: CXCursor): Int
+using CXRefQualifierKind = Int
+using CXRefQualifier_None = 0
+using CXRefQualifier_LValue = 1
+using CXRefQualifier_RValue = 2
+[native("clang_Type_getNumTemplateArguments")]
+fun clang_Type_getNumTemplateArguments (sprArg0: CXType): Int
+[native("clang_Type_getTemplateArgumentAsType")]
+fun clang_Type_getTemplateArgumentAsType (sprArg1: CXType, sprArg0: Int): CXType
+[native("clang_Type_getCXXRefQualifier")]
+fun clang_Type_getCXXRefQualifier (sprArg0: CXType): CXRefQualifierKind
+[native("clang_Cursor_isBitField")]
+fun clang_Cursor_isBitField (sprArg0: CXCursor): Int
+[native("clang_isVirtualBase")]
+fun clang_isVirtualBase (sprArg0: CXCursor): Int
+using CX_CXXAccessSpecifier = Int
+using CX_CXXInvalidAccessSpecifier = 0
+using CX_CXXPublic = 1
+using CX_CXXProtected = 2
+using CX_CXXPrivate = 3
+[native("clang_getCXXAccessSpecifier")]
+fun clang_getCXXAccessSpecifier (sprArg0: CXCursor): CX_CXXAccessSpecifier
+using CX_StorageClass = Int
+using CX_SC_Invalid = 0
+using CX_SC_None = 1
+using CX_SC_Extern = 2
+using CX_SC_Static = 3
+using CX_SC_PrivateExtern = 4
+using CX_SC_OpenCLWorkGroupLocal = 5
+using CX_SC_Auto = 6
+using CX_SC_Register = 7
+[native("clang_Cursor_getStorageClass")]
+fun clang_Cursor_getStorageClass (sprArg0: CXCursor): CX_StorageClass
+[native("clang_getNumOverloadedDecls")]
+fun clang_getNumOverloadedDecls (sprArg0: CXCursor): Int
+[native("clang_getOverloadedDecl")]
+fun clang_getOverloadedDecl (sprArg1: CXCursor, sprArg0: Int): CXCursor
+[native("clang_getIBOutletCollectionType")]
+fun clang_getIBOutletCollectionType (sprArg0: CXCursor): CXType
+using CXChildVisitResult = Int
+using CXChildVisit_Break = 0
+using CXChildVisit_Continue = 1
+using CXChildVisit_Recurse = 2
+using CXCursorVisitor = FunctionPtr(CXChildVisitResult, CXCursor, CXCursor, CXClientData)
+[native("clang_visitChildren")]
+fun clang_visitChildren (sprArg2: CXCursor, sprArg1: CXCursorVisitor, sprArg0: CXClientData): Int
+[native("clang_getCursorUSR")]
+fun clang_getCursorUSR (sprArg0: CXCursor): CXString
+[native("clang_constructUSR_ObjCClass")]
+fun clang_constructUSR_ObjCClass (sprArg0: Ptr(Char)): CXString
+[native("clang_constructUSR_ObjCCategory")]
+fun clang_constructUSR_ObjCCategory (sprArg1: Ptr(Char), sprArg0: Ptr(Char)): CXString
+[native("clang_constructUSR_ObjCProtocol")]
+fun clang_constructUSR_ObjCProtocol (sprArg0: Ptr(Char)): CXString
+[native("clang_constructUSR_ObjCIvar")]
+fun clang_constructUSR_ObjCIvar (sprArg1: Ptr(Char), sprArg0: CXString): CXString
+[native("clang_constructUSR_ObjCMethod")]
+fun clang_constructUSR_ObjCMethod (sprArg2: Ptr(Char), sprArg1: Int, sprArg0: CXString): CXString
+[native("clang_constructUSR_ObjCProperty")]
+fun clang_constructUSR_ObjCProperty (sprArg1: Ptr(Char), sprArg0: CXString): CXString
+[native("clang_getCursorSpelling")]
+fun clang_getCursorSpelling (sprArg0: CXCursor): CXString
+[native("clang_Cursor_getSpellingNameRange")]
+fun clang_Cursor_getSpellingNameRange (sprArg2: CXCursor, sprArg1: Int, sprArg0: Int): CXSourceRange
+[native("clang_getCursorDisplayName")]
+fun clang_getCursorDisplayName (sprArg0: CXCursor): CXString
+[native("clang_getCursorReferenced")]
+fun clang_getCursorReferenced (sprArg0: CXCursor): CXCursor
+[native("clang_getCursorDefinition")]
+fun clang_getCursorDefinition (sprArg0: CXCursor): CXCursor
+[native("clang_isCursorDefinition")]
+fun clang_isCursorDefinition (sprArg0: CXCursor): Int
+[native("clang_getCanonicalCursor")]
+fun clang_getCanonicalCursor (sprArg0: CXCursor): CXCursor
+[native("clang_Cursor_getObjCSelectorIndex")]
+fun clang_Cursor_getObjCSelectorIndex (sprArg0: CXCursor): Int
+[native("clang_Cursor_isDynamicCall")]
+fun clang_Cursor_isDynamicCall (sprArg0: CXCursor): Int
+[native("clang_Cursor_getReceiverType")]
+fun clang_Cursor_getReceiverType (sprArg0: CXCursor): CXType
+using genSprVar7 = Int
+using CXObjCPropertyAttr_noattr = 0
+using CXObjCPropertyAttr_readonly = 1
+using CXObjCPropertyAttr_getter = 2
+using CXObjCPropertyAttr_assign = 4
+using CXObjCPropertyAttr_readwrite = 8
+using CXObjCPropertyAttr_retain = 16
+using CXObjCPropertyAttr_copy = 32
+using CXObjCPropertyAttr_nonatomic = 64
+using CXObjCPropertyAttr_setter = 128
+using CXObjCPropertyAttr_atomic = 256
+using CXObjCPropertyAttr_weak = 512
+using CXObjCPropertyAttr_strong = 1024
+using CXObjCPropertyAttr_unsafe_unretained = 2048
+using CXObjCPropertyAttr_class = 4096
+using CXObjCPropertyAttrKind = genSprVar7
+[native("clang_Cursor_getObjCPropertyAttributes")]
+fun clang_Cursor_getObjCPropertyAttributes (sprArg1: CXCursor, sprArg0: Int): Int
+using genSprVar8 = Int
+using CXObjCDeclQualifier_None = 0
+using CXObjCDeclQualifier_In = 1
+using CXObjCDeclQualifier_Inout = 2
+using CXObjCDeclQualifier_Out = 4
+using CXObjCDeclQualifier_Bycopy = 8
+using CXObjCDeclQualifier_Byref = 16
+using CXObjCDeclQualifier_Oneway = 32
+using CXObjCDeclQualifierKind = genSprVar8
+[native("clang_Cursor_getObjCDeclQualifiers")]
+fun clang_Cursor_getObjCDeclQualifiers (sprArg0: CXCursor): Int
+[native("clang_Cursor_isObjCOptional")]
+fun clang_Cursor_isObjCOptional (sprArg0: CXCursor): Int
+[native("clang_Cursor_isVariadic")]
+fun clang_Cursor_isVariadic (sprArg0: CXCursor): Int
+[native("clang_Cursor_isExternalSymbol")]
+fun clang_Cursor_isExternalSymbol (sprArg3: CXCursor, sprArg2: Ptr(CXString), sprArg1: Ptr(CXString), sprArg0: Ptr(Int)): Int
+[native("clang_Cursor_getCommentRange")]
+fun clang_Cursor_getCommentRange (sprArg0: CXCursor): CXSourceRange
+[native("clang_Cursor_getRawCommentText")]
+fun clang_Cursor_getRawCommentText (sprArg0: CXCursor): CXString
+[native("clang_Cursor_getBriefCommentText")]
+fun clang_Cursor_getBriefCommentText (sprArg0: CXCursor): CXString
+[native("clang_Cursor_getMangling")]
+fun clang_Cursor_getMangling (sprArg0: CXCursor): CXString
+[native("clang_Cursor_getCXXManglings")]
+fun clang_Cursor_getCXXManglings (sprArg0: CXCursor): Ptr(CXStringSet)
+using CXModule = Ptr(Char)
+[native("clang_Cursor_getModule")]
+fun clang_Cursor_getModule (sprArg0: CXCursor): CXModule
+[native("clang_getModuleForFile")]
+fun clang_getModuleForFile (sprArg1: CXTranslationUnit, sprArg0: CXFile): CXModule
+[native("clang_Module_getASTFile")]
+fun clang_Module_getASTFile (sprArg0: CXModule): CXFile
+[native("clang_Module_getParent")]
+fun clang_Module_getParent (sprArg0: CXModule): CXModule
+[native("clang_Module_getName")]
+fun clang_Module_getName (sprArg0: CXModule): CXString
+[native("clang_Module_getFullName")]
+fun clang_Module_getFullName (sprArg0: CXModule): CXString
+[native("clang_Module_isSystem")]
+fun clang_Module_isSystem (sprArg0: CXModule): Int
+[native("clang_Module_getNumTopLevelHeaders")]
+fun clang_Module_getNumTopLevelHeaders (sprArg1: CXTranslationUnit, sprArg0: CXModule): Int
+[native("clang_Module_getTopLevelHeader")]
+fun clang_Module_getTopLevelHeader (sprArg2: CXTranslationUnit, sprArg1: CXModule, sprArg0: Int): CXFile
+[native("clang_CXXConstructor_isConvertingConstructor")]
+fun clang_CXXConstructor_isConvertingConstructor (sprArg0: CXCursor): Int
+[native("clang_CXXConstructor_isCopyConstructor")]
+fun clang_CXXConstructor_isCopyConstructor (sprArg0: CXCursor): Int
+[native("clang_CXXConstructor_isDefaultConstructor")]
+fun clang_CXXConstructor_isDefaultConstructor (sprArg0: CXCursor): Int
+[native("clang_CXXConstructor_isMoveConstructor")]
+fun clang_CXXConstructor_isMoveConstructor (sprArg0: CXCursor): Int
+[native("clang_CXXField_isMutable")]
+fun clang_CXXField_isMutable (sprArg0: CXCursor): Int
+[native("clang_CXXMethod_isDefaulted")]
+fun clang_CXXMethod_isDefaulted (sprArg0: CXCursor): Int
+[native("clang_CXXMethod_isPureVirtual")]
+fun clang_CXXMethod_isPureVirtual (sprArg0: CXCursor): Int
+[native("clang_CXXMethod_isStatic")]
+fun clang_CXXMethod_isStatic (sprArg0: CXCursor): Int
+[native("clang_CXXMethod_isVirtual")]
+fun clang_CXXMethod_isVirtual (sprArg0: CXCursor): Int
+[native("clang_EnumDecl_isScoped")]
+fun clang_EnumDecl_isScoped (sprArg0: CXCursor): Int
+[native("clang_CXXMethod_isConst")]
+fun clang_CXXMethod_isConst (sprArg0: CXCursor): Int
+[native("clang_getTemplateCursorKind")]
+fun clang_getTemplateCursorKind (sprArg0: CXCursor): CXCursorKind
+[native("clang_getSpecializedCursorTemplate")]
+fun clang_getSpecializedCursorTemplate (sprArg0: CXCursor): CXCursor
+[native("clang_getCursorReferenceNameRange")]
+fun clang_getCursorReferenceNameRange (sprArg2: CXCursor, sprArg1: Int, sprArg0: Int): CXSourceRange
+using CXNameRefFlags = Int
+using CXNameRange_WantQualifier = 1
+using CXNameRange_WantTemplateArgs = 2
+using CXNameRange_WantSinglePiece = 4
+using CXTokenKind = Int
+using CXToken_Punctuation = 0
+using CXToken_Keyword = 1
+using CXToken_Identifier = 2
+using CXToken_Literal = 3
+using CXToken_Comment = 4
+using CXTokenKind = CXTokenKind
+datatype genSprVar9
+    int_data : StaticArray(Int, 4)
+    ptr_data : Ptr(Char)
+using CXToken = genSprVar9
+[native("clang_getTokenKind")]
+fun clang_getTokenKind (sprArg0: CXToken): CXTokenKind
+[native("clang_getTokenSpelling")]
+fun clang_getTokenSpelling (sprArg1: CXTranslationUnit, sprArg0: CXToken): CXString
+[native("clang_getTokenLocation")]
+fun clang_getTokenLocation (sprArg1: CXTranslationUnit, sprArg0: CXToken): CXSourceLocation
+[native("clang_getTokenExtent")]
+fun clang_getTokenExtent (sprArg1: CXTranslationUnit, sprArg0: CXToken): CXSourceRange
+[native("clang_tokenize")]
+fun clang_tokenize (sprArg3: CXTranslationUnit, sprArg2: CXSourceRange, sprArg1: Ptr(Ptr(CXToken)), sprArg0: Ptr(Int))
+[native("clang_annotateTokens")]
+fun clang_annotateTokens (sprArg3: CXTranslationUnit, sprArg2: Ptr(CXToken), sprArg1: Int, sprArg0: Ptr(CXCursor))
+[native("clang_disposeTokens")]
+fun clang_disposeTokens (sprArg2: CXTranslationUnit, sprArg1: Ptr(CXToken), sprArg0: Int)
+[native("clang_getCursorKindSpelling")]
+fun clang_getCursorKindSpelling (sprArg0: CXCursorKind): CXString
+[native("clang_getDefinitionSpellingAndExtent")]
+fun clang_getDefinitionSpellingAndExtent (sprArg6: CXCursor, sprArg5: Ptr(Ptr(Char)), sprArg4: Ptr(Ptr(Char)), sprArg3: Ptr(Int), sprArg2: Ptr(Int), sprArg1: Ptr(Int), sprArg0: Ptr(Int))
+[native("clang_enableStackTraces")]
+fun clang_enableStackTraces
+[native("clang_executeOnThread")]
+fun clang_executeOnThread (sprArg2: FunctionPtr(Void, Ptr(Char)), sprArg1: Ptr(Char), sprArg0: Int)
+using CXCompletionString = Ptr(Char)
+datatype genSprVar10
+    CursorKind : CXCursorKind
+    CompletionString : CXCompletionString
+using CXCompletionResult = genSprVar10
+using CXCompletionChunkKind = Int
+using CXCompletionChunk_Optional = 0
+using CXCompletionChunk_TypedText = 1
+using CXCompletionChunk_Text = 2
+using CXCompletionChunk_Placeholder = 3
+using CXCompletionChunk_Informative = 4
+using CXCompletionChunk_CurrentParameter = 5
+using CXCompletionChunk_LeftParen = 6
+using CXCompletionChunk_RightParen = 7
+using CXCompletionChunk_LeftBracket = 8
+using CXCompletionChunk_RightBracket = 9
+using CXCompletionChunk_LeftBrace = 10
+using CXCompletionChunk_RightBrace = 11
+using CXCompletionChunk_LeftAngle = 12
+using CXCompletionChunk_RightAngle = 13
+using CXCompletionChunk_Comma = 14
+using CXCompletionChunk_ResultType = 15
+using CXCompletionChunk_Colon = 16
+using CXCompletionChunk_SemiColon = 17
+using CXCompletionChunk_Equal = 18
+using CXCompletionChunk_HorizontalSpace = 19
+using CXCompletionChunk_VerticalSpace = 20
+[native("clang_getCompletionChunkKind")]
+fun clang_getCompletionChunkKind (sprArg1: CXCompletionString, sprArg0: Int): CXCompletionChunkKind
+[native("clang_getCompletionChunkText")]
+fun clang_getCompletionChunkText (sprArg1: CXCompletionString, sprArg0: Int): CXString
+[native("clang_getCompletionChunkCompletionString")]
+fun clang_getCompletionChunkCompletionString (sprArg1: CXCompletionString, sprArg0: Int): CXCompletionString
+[native("clang_getNumCompletionChunks")]
+fun clang_getNumCompletionChunks (sprArg0: CXCompletionString): Int
+[native("clang_getCompletionPriority")]
+fun clang_getCompletionPriority (sprArg0: CXCompletionString): Int
+[native("clang_getCompletionAvailability")]
+fun clang_getCompletionAvailability (sprArg0: CXCompletionString): CXAvailabilityKind
+[native("clang_getCompletionNumAnnotations")]
+fun clang_getCompletionNumAnnotations (sprArg0: CXCompletionString): Int
+[native("clang_getCompletionAnnotation")]
+fun clang_getCompletionAnnotation (sprArg1: CXCompletionString, sprArg0: Int): CXString
+[native("clang_getCompletionParent")]
+fun clang_getCompletionParent (sprArg1: CXCompletionString, sprArg0: Ptr(CXCursorKind)): CXString
+[native("clang_getCompletionBriefComment")]
+fun clang_getCompletionBriefComment (sprArg0: CXCompletionString): CXString
+[native("clang_getCursorCompletionString")]
+fun clang_getCursorCompletionString (sprArg0: CXCursor): CXCompletionString
+datatype genSprVar11
+    Results : Ptr(CXCompletionResult)
+    NumResults : Int
+using CXCodeCompleteResults = genSprVar11
+using CXCodeComplete_Flags = Int
+using CXCodeComplete_IncludeMacros = 1
+using CXCodeComplete_IncludeCodePatterns = 2
+using CXCodeComplete_IncludeBriefComments = 4
+using CXCompletionContext = Int
+using CXCompletionContext_Unexposed = 0
+using CXCompletionContext_AnyType = 1
+using CXCompletionContext_AnyValue = 2
+using CXCompletionContext_ObjCObjectValue = 4
+using CXCompletionContext_ObjCSelectorValue = 8
+using CXCompletionContext_CXXClassTypeValue = 16
+using CXCompletionContext_DotMemberAccess = 32
+using CXCompletionContext_ArrowMemberAccess = 64
+using CXCompletionContext_ObjCPropertyAccess = 128
+using CXCompletionContext_EnumTag = 256
+using CXCompletionContext_UnionTag = 512
+using CXCompletionContext_StructTag = 1024
+using CXCompletionContext_ClassTag = 2048
+using CXCompletionContext_Namespace = 4096
+using CXCompletionContext_NestedNameSpecifier = 8192
+using CXCompletionContext_ObjCInterface = 16384
+using CXCompletionContext_ObjCProtocol = 32768
+using CXCompletionContext_ObjCCategory = 65536
+using CXCompletionContext_ObjCInstanceMessage = 131072
+using CXCompletionContext_ObjCClassMessage = 262144
+using CXCompletionContext_ObjCSelectorName = 524288
+using CXCompletionContext_MacroName = 1048576
+using CXCompletionContext_NaturalLanguage = 2097152
+using CXCompletionContext_Unknown = 4194303
+[native("clang_defaultCodeCompleteOptions")]
+fun clang_defaultCodeCompleteOptions: Int
+[native("clang_codeCompleteAt")]
+fun clang_codeCompleteAt (sprArg6: CXTranslationUnit, sprArg5: Ptr(Char), sprArg4: Int, sprArg3: Int, sprArg2: Ptr(CXUnsavedFile), sprArg1: Int, sprArg0: Int): Ptr(CXCodeCompleteResults)
+[native("clang_sortCodeCompletionResults")]
+fun clang_sortCodeCompletionResults (sprArg1: Ptr(CXCompletionResult), sprArg0: Int)
+[native("clang_disposeCodeCompleteResults")]
+fun clang_disposeCodeCompleteResults (sprArg0: Ptr(CXCodeCompleteResults))
+[native("clang_codeCompleteGetNumDiagnostics")]
+fun clang_codeCompleteGetNumDiagnostics (sprArg0: Ptr(CXCodeCompleteResults)): Int
+[native("clang_codeCompleteGetDiagnostic")]
+fun clang_codeCompleteGetDiagnostic (sprArg1: Ptr(CXCodeCompleteResults), sprArg0: Int): CXDiagnostic
+[native("clang_codeCompleteGetContexts")]
+fun clang_codeCompleteGetContexts (sprArg0: Ptr(CXCodeCompleteResults)): Int
+[native("clang_codeCompleteGetContainerKind")]
+fun clang_codeCompleteGetContainerKind (sprArg1: Ptr(CXCodeCompleteResults), sprArg0: Ptr(Int)): CXCursorKind
+[native("clang_codeCompleteGetContainerUSR")]
+fun clang_codeCompleteGetContainerUSR (sprArg0: Ptr(CXCodeCompleteResults)): CXString
+[native("clang_codeCompleteGetObjCSelector")]
+fun clang_codeCompleteGetObjCSelector (sprArg0: Ptr(CXCodeCompleteResults)): CXString
+[native("clang_getClangVersion")]
+fun clang_getClangVersion: CXString
+[native("clang_toggleCrashRecovery")]
+fun clang_toggleCrashRecovery (sprArg0: Int)
+using CXInclusionVisitor = FunctionPtr(Void, CXFile, Ptr(CXSourceLocation), Int, CXClientData)
+[native("clang_getInclusions")]
+fun clang_getInclusions (sprArg2: CXTranslationUnit, sprArg1: CXInclusionVisitor, sprArg0: CXClientData)
+using genSprVar12 = Int
+using CXEval_Int = 1
+using CXEval_Float = 2
+using CXEval_ObjCStrLiteral = 3
+using CXEval_StrLiteral = 4
+using CXEval_CFStr = 5
+using CXEval_Other = 6
+using CXEval_UnExposed = 0
+using CXEvalResultKind = genSprVar12
+using CXEvalResult = Ptr(Char)
+[native("clang_Cursor_Evaluate")]
+fun clang_Cursor_Evaluate (sprArg0: CXCursor): CXEvalResult
+[native("clang_EvalResult_getKind")]
+fun clang_EvalResult_getKind (sprArg0: CXEvalResult): CXEvalResultKind
+[native("clang_EvalResult_getAsInt")]
+fun clang_EvalResult_getAsInt (sprArg0: CXEvalResult): Int
+[native("clang_EvalResult_getAsLongLong")]
+fun clang_EvalResult_getAsLongLong (sprArg0: CXEvalResult): Int
+[native("clang_EvalResult_isUnsignedInt")]
+fun clang_EvalResult_isUnsignedInt (sprArg0: CXEvalResult): Int
+[native("clang_EvalResult_getAsUnsigned")]
+fun clang_EvalResult_getAsUnsigned (sprArg0: CXEvalResult): Int
+[native("clang_EvalResult_getAsDouble")]
+fun clang_EvalResult_getAsDouble (sprArg0: CXEvalResult): Double
+[native("clang_EvalResult_getAsStr")]
+fun clang_EvalResult_getAsStr (sprArg0: CXEvalResult): Ptr(Char)
+[native("clang_EvalResult_dispose")]
+fun clang_EvalResult_dispose (sprArg0: CXEvalResult)
+using CXRemapping = Ptr(Char)
+[native("clang_getRemappings")]
+fun clang_getRemappings (sprArg0: Ptr(Char)): CXRemapping
+[native("clang_getRemappingsFromFileList")]
+fun clang_getRemappingsFromFileList (sprArg1: Ptr(Ptr(Char)), sprArg0: Int): CXRemapping
+[native("clang_remap_getNumFiles")]
+fun clang_remap_getNumFiles (sprArg0: CXRemapping): Int
+[native("clang_remap_getFilenames")]
+fun clang_remap_getFilenames (sprArg3: CXRemapping, sprArg2: Int, sprArg1: Ptr(CXString), sprArg0: Ptr(CXString))
+[native("clang_remap_dispose")]
+fun clang_remap_dispose (sprArg0: CXRemapping)
+using CXVisitorResult = Int
+using CXVisit_Break = 0
+using CXVisit_Continue = 1
+datatype CXCursorAndRangeVisitor
+    context : Ptr(Char)
+    visit : FunctionPtr(CXVisitorResult, Ptr(Char), CXCursor, CXSourceRange)
+using CXCursorAndRangeVisitor = CXCursorAndRangeVisitor
+using genSprVar13 = Int
+using CXResult_Success = 0
+using CXResult_Invalid = 1
+using CXResult_VisitBreak = 2
+using CXResult = genSprVar13
+[native("clang_findReferencesInFile")]
+fun clang_findReferencesInFile (sprArg2: CXCursor, sprArg1: CXFile, sprArg0: CXCursorAndRangeVisitor): CXResult
+[native("clang_findIncludesInFile")]
+fun clang_findIncludesInFile (sprArg2: CXTranslationUnit, sprArg1: CXFile, sprArg0: CXCursorAndRangeVisitor): CXResult
+using CXIdxClientFile = Ptr(Char)
+using CXIdxClientEntity = Ptr(Char)
+using CXIdxClientContainer = Ptr(Char)
+using CXIdxClientASTFile = Ptr(Char)
+datatype genSprVar14
+    ptr_data : StaticArray(Ptr(Char), 2)
+    int_data : Int
+using CXIdxLoc = genSprVar14
+datatype genSprVar15
+    hashLoc : CXIdxLoc
+    filename : Ptr(Char)
+    file : CXFile
+    isImport : Int
+    isAngled : Int
+    isModuleImport : Int
+using CXIdxIncludedFileInfo = genSprVar15
+datatype genSprVar16
+    file : CXFile
+    module1 : CXModule
+    loc : CXIdxLoc
+    isImplicit : Int
+using CXIdxImportedASTFileInfo = genSprVar16
+using genSprVar17 = Int
+using CXIdxEntity_Unexposed = 0
+using CXIdxEntity_Typedef = 1
+using CXIdxEntity_Function = 2
+using CXIdxEntity_Variable = 3
+using CXIdxEntity_Field = 4
+using CXIdxEntity_EnumConstant = 5
+using CXIdxEntity_ObjCClass = 6
+using CXIdxEntity_ObjCProtocol = 7
+using CXIdxEntity_ObjCCategory = 8
+using CXIdxEntity_ObjCInstanceMethod = 9
+using CXIdxEntity_ObjCClassMethod = 10
+using CXIdxEntity_ObjCProperty = 11
+using CXIdxEntity_ObjCIvar = 12
+using CXIdxEntity_Enum = 13
+using CXIdxEntity_Struct = 14
+using CXIdxEntity_Union = 15
+using CXIdxEntity_CXXClass = 16
+using CXIdxEntity_CXXNamespace = 17
+using CXIdxEntity_CXXNamespaceAlias = 18
+using CXIdxEntity_CXXStaticVariable = 19
+using CXIdxEntity_CXXStaticMethod = 20
+using CXIdxEntity_CXXInstanceMethod = 21
+using CXIdxEntity_CXXConstructor = 22
+using CXIdxEntity_CXXDestructor = 23
+using CXIdxEntity_CXXConversionFunction = 24
+using CXIdxEntity_CXXTypeAlias = 25
+using CXIdxEntity_CXXInterface = 26
+using CXIdxEntityKind = genSprVar17
+using genSprVar18 = Int
+using CXIdxEntityLang_None = 0
+using CXIdxEntityLang_C = 1
+using CXIdxEntityLang_ObjC = 2
+using CXIdxEntityLang_CXX = 3
+using CXIdxEntityLang_Swift = 4
+using CXIdxEntityLanguage = genSprVar18
+using genSprVar19 = Int
+using CXIdxEntity_NonTemplate = 0
+using CXIdxEntity_Template = 1
+using CXIdxEntity_TemplatePartialSpecialization = 2
+using CXIdxEntity_TemplateSpecialization = 3
+using CXIdxEntityCXXTemplateKind = genSprVar19
+using genSprVar20 = Int
+using CXIdxAttr_Unexposed = 0
+using CXIdxAttr_IBAction = 1
+using CXIdxAttr_IBOutlet = 2
+using CXIdxAttr_IBOutletCollection = 3
+using CXIdxAttrKind = genSprVar20
+datatype genSprVar21
+    kind : CXIdxAttrKind
+    cursor : CXCursor
+    loc : CXIdxLoc
+using CXIdxAttrInfo = genSprVar21
+datatype genSprVar22
+    kind : CXIdxEntityKind
+    templateKind : CXIdxEntityCXXTemplateKind
+    lang : CXIdxEntityLanguage
+    name : Ptr(Char)
+    USR : Ptr(Char)
+    cursor : CXCursor
+    attributes : Ptr(Ptr(CXIdxAttrInfo))
+    numAttributes : Int
+using CXIdxEntityInfo = genSprVar22
+datatype genSprVar23
+    cursor : CXCursor
+using CXIdxContainerInfo = genSprVar23
+datatype genSprVar24
+    attrInfo : Ptr(CXIdxAttrInfo)
+    objcClass : Ptr(CXIdxEntityInfo)
+    classCursor : CXCursor
+    classLoc : CXIdxLoc
+using CXIdxIBOutletCollectionAttrInfo = genSprVar24
+using genSprVar25 = Int
+using CXIdxDeclFlag_Skipped = 1
+using CXIdxDeclInfoFlags = genSprVar25
+datatype genSprVar26
+    entityInfo : Ptr(CXIdxEntityInfo)
+    cursor : CXCursor
+    loc : CXIdxLoc
+    semanticContainer : Ptr(CXIdxContainerInfo)
+    lexicalContainer : Ptr(CXIdxContainerInfo)
+    isRedeclaration : Int
+    isDefinition : Int
+    isContainer : Int
+    declAsContainer : Ptr(CXIdxContainerInfo)
+    isImplicit : Int
+    attributes : Ptr(Ptr(CXIdxAttrInfo))
+    numAttributes : Int
+    flags : Int
+using CXIdxDeclInfo = genSprVar26
+using genSprVar27 = Int
+using CXIdxObjCContainer_ForwardRef = 0
+using CXIdxObjCContainer_Interface = 1
+using CXIdxObjCContainer_Implementation = 2
+using CXIdxObjCContainerKind = genSprVar27
+datatype genSprVar28
+    declInfo : Ptr(CXIdxDeclInfo)
+    kind : CXIdxObjCContainerKind
+using CXIdxObjCContainerDeclInfo = genSprVar28
+datatype genSprVar29
+    base : Ptr(CXIdxEntityInfo)
+    cursor : CXCursor
+    loc : CXIdxLoc
+using CXIdxBaseClassInfo = genSprVar29
+datatype genSprVar30
+    protocol : Ptr(CXIdxEntityInfo)
+    cursor : CXCursor
+    loc : CXIdxLoc
+using CXIdxObjCProtocolRefInfo = genSprVar30
+datatype genSprVar31
+    protocols : Ptr(Ptr(CXIdxObjCProtocolRefInfo))
+    numProtocols : Int
+using CXIdxObjCProtocolRefListInfo = genSprVar31
+datatype genSprVar32
+    containerInfo : Ptr(CXIdxObjCContainerDeclInfo)
+    superInfo : Ptr(CXIdxBaseClassInfo)
+    protocols : Ptr(CXIdxObjCProtocolRefListInfo)
+using CXIdxObjCInterfaceDeclInfo = genSprVar32
+datatype genSprVar33
+    containerInfo : Ptr(CXIdxObjCContainerDeclInfo)
+    objcClass : Ptr(CXIdxEntityInfo)
+    classCursor : CXCursor
+    classLoc : CXIdxLoc
+    protocols : Ptr(CXIdxObjCProtocolRefListInfo)
+using CXIdxObjCCategoryDeclInfo = genSprVar33
+datatype genSprVar34
+    declInfo : Ptr(CXIdxDeclInfo)
+    getter : Ptr(CXIdxEntityInfo)
+    setter : Ptr(CXIdxEntityInfo)
+using CXIdxObjCPropertyDeclInfo = genSprVar34
+datatype genSprVar35
+    declInfo : Ptr(CXIdxDeclInfo)
+    bases : Ptr(Ptr(CXIdxBaseClassInfo))
+    numBases : Int
+using CXIdxCXXClassDeclInfo = genSprVar35
+using genSprVar36 = Int
+using CXIdxEntityRef_Direct = 1
+using CXIdxEntityRef_Implicit = 2
+using CXIdxEntityRefKind = genSprVar36
+datatype genSprVar37
+    kind : CXIdxEntityRefKind
+    cursor : CXCursor
+    loc : CXIdxLoc
+    referencedEntity : Ptr(CXIdxEntityInfo)
+    parentEntity : Ptr(CXIdxEntityInfo)
+    container : Ptr(CXIdxContainerInfo)
+using CXIdxEntityRefInfo = genSprVar37
+datatype genSprVar38
+    abortQuery : FunctionPtr(Int, CXClientData, Ptr(Char))
+    diagnostic : FunctionPtr(Void, CXClientData, CXDiagnosticSet, Ptr(Char))
+    enteredMainFile : FunctionPtr(CXIdxClientFile, CXClientData, CXFile, Ptr(Char))
+    ppIncludedFile : FunctionPtr(CXIdxClientFile, CXClientData, Ptr(CXIdxIncludedFileInfo))
+    importedASTFile : FunctionPtr(CXIdxClientASTFile, CXClientData, Ptr(CXIdxImportedASTFileInfo))
+    startedTranslationUnit : FunctionPtr(CXIdxClientContainer, CXClientData, Ptr(Char))
+    indexDeclaration : FunctionPtr(Void, CXClientData, Ptr(CXIdxDeclInfo))
+    indexEntityReference : FunctionPtr(Void, CXClientData, Ptr(CXIdxEntityRefInfo))
+using IndexerCallbacks = genSprVar38
+[native("clang_index_isEntityObjCContainerKind")]
+fun clang_index_isEntityObjCContainerKind (sprArg0: CXIdxEntityKind): Int
+[native("clang_index_getObjCContainerDeclInfo")]
+fun clang_index_getObjCContainerDeclInfo (sprArg0: Ptr(CXIdxDeclInfo)): Ptr(CXIdxObjCContainerDeclInfo)
+[native("clang_index_getObjCInterfaceDeclInfo")]
+fun clang_index_getObjCInterfaceDeclInfo (sprArg0: Ptr(CXIdxDeclInfo)): Ptr(CXIdxObjCInterfaceDeclInfo)
+[native("clang_index_getObjCCategoryDeclInfo")]
+fun clang_index_getObjCCategoryDeclInfo (sprArg0: Ptr(CXIdxDeclInfo)): Ptr(CXIdxObjCCategoryDeclInfo)
+[native("clang_index_getObjCProtocolRefListInfo")]
+fun clang_index_getObjCProtocolRefListInfo (sprArg0: Ptr(CXIdxDeclInfo)): Ptr(CXIdxObjCProtocolRefListInfo)
+[native("clang_index_getObjCPropertyDeclInfo")]
+fun clang_index_getObjCPropertyDeclInfo (sprArg0: Ptr(CXIdxDeclInfo)): Ptr(CXIdxObjCPropertyDeclInfo)
+[native("clang_index_getIBOutletCollectionAttrInfo")]
+fun clang_index_getIBOutletCollectionAttrInfo (sprArg0: Ptr(CXIdxAttrInfo)): Ptr(CXIdxIBOutletCollectionAttrInfo)
+[native("clang_index_getCXXClassDeclInfo")]
+fun clang_index_getCXXClassDeclInfo (sprArg0: Ptr(CXIdxDeclInfo)): Ptr(CXIdxCXXClassDeclInfo)
+[native("clang_index_getClientContainer")]
+fun clang_index_getClientContainer (sprArg0: Ptr(CXIdxContainerInfo)): CXIdxClientContainer
+[native("clang_index_setClientContainer")]
+fun clang_index_setClientContainer (sprArg1: Ptr(CXIdxContainerInfo), sprArg0: CXIdxClientContainer)
+[native("clang_index_getClientEntity")]
+fun clang_index_getClientEntity (sprArg0: Ptr(CXIdxEntityInfo)): CXIdxClientEntity
+[native("clang_index_setClientEntity")]
+fun clang_index_setClientEntity (sprArg1: Ptr(CXIdxEntityInfo), sprArg0: CXIdxClientEntity)
+using CXIndexAction = Ptr(Char)
+[native("clang_IndexAction_create")]
+fun clang_IndexAction_create (sprArg0: CXIndex): CXIndexAction
+[native("clang_IndexAction_dispose")]
+fun clang_IndexAction_dispose (sprArg0: CXIndexAction)
+using genSprVar39 = Int
+using CXIndexOpt_None = 0
+using CXIndexOpt_SuppressRedundantRefs = 1
+using CXIndexOpt_IndexFunctionLocalSymbols = 2
+using CXIndexOpt_IndexImplicitTemplateInstantiations = 4
+using CXIndexOpt_SuppressWarnings = 8
+using CXIndexOpt_SkipParsedBodiesInSession = 16
+using CXIndexOptFlags = genSprVar39
+[native("clang_indexSourceFile")]
+fun clang_indexSourceFile (sprArg11: CXIndexAction, sprArg10: CXClientData, sprArg9: Ptr(IndexerCallbacks), sprArg8: Int, sprArg7: Int, sprArg6: Ptr(Char), sprArg5: Ptr(Ptr(Char)), sprArg4: Int, sprArg3: Ptr(CXUnsavedFile), sprArg2: Int, sprArg1: Ptr(CXTranslationUnit), sprArg0: Int): Int
+[native("clang_indexSourceFileFullArgv")]
+fun clang_indexSourceFileFullArgv (sprArg11: CXIndexAction, sprArg10: CXClientData, sprArg9: Ptr(IndexerCallbacks), sprArg8: Int, sprArg7: Int, sprArg6: Ptr(Char), sprArg5: Ptr(Ptr(Char)), sprArg4: Int, sprArg3: Ptr(CXUnsavedFile), sprArg2: Int, sprArg1: Ptr(CXTranslationUnit), sprArg0: Int): Int
+[native("clang_indexTranslationUnit")]
+fun clang_indexTranslationUnit (sprArg5: CXIndexAction, sprArg4: CXClientData, sprArg3: Ptr(IndexerCallbacks), sprArg2: Int, sprArg1: Int, sprArg0: CXTranslationUnit): Int
+[native("clang_indexLoc_getFileLocation")]
+fun clang_indexLoc_getFileLocation (sprArg5: CXIdxLoc, sprArg4: Ptr(CXIdxClientFile), sprArg3: Ptr(CXFile), sprArg2: Ptr(Int), sprArg1: Ptr(Int), sprArg0: Ptr(Int))
+[native("clang_indexLoc_getCXSourceLocation")]
+fun clang_indexLoc_getCXSourceLocation (sprArg0: CXIdxLoc): CXSourceLocation
+using CXFieldVisitor = FunctionPtr(CXVisitorResult, CXCursor, CXClientData)
+[native("clang_Type_visitFields")]
+fun clang_Type_visitFields (sprArg2: CXType, sprArg1: CXFieldVisitor, sprArg0: CXClientData): Int

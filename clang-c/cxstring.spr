@@ -1,0 +1,18 @@
+import std.ptr
+import std.staticArray
+import std.function
+
+datatype genSprVar0
+    data : Ptr(Char)
+    private_flags : Int
+using CXString = genSprVar0
+datatype genSprVar1
+    Strings : Ptr(CXString)
+    Count : Int
+using CXStringSet = genSprVar1
+[native("clang_getCString")]
+fun clang_getCString (sprArg0: CXString): Ptr(Char)
+[native("clang_disposeString")]
+fun clang_disposeString (sprArg0: CXString)
+[native("clang_disposeStringSet")]
+fun clang_disposeStringSet (sprArg0: Ptr(CXStringSet))

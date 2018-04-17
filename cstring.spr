@@ -1,0 +1,26 @@
+import std.string
+
+datatype CString
+    begin: @Byte
+    alloc: Bool
+
+fun ctor(this: @CString, ref: StringRef)
+    this.begin := malloc(ref.size + 1)
+    memcpy(this.begin, ref.begin, ref.size)
+    var end: @Byte = ptrAdd(this.begin, ref.size)
+    end = Byte(0)
+    this.alloc = true
+
+fun ctor(this: @CString, str: @String)
+    var ref = str.asStringRef
+    this.begin := ref.begin
+    this.alloc = false
+    
+fun front(this: CString): @Char = reinterpretCast(@Char, begin)
+fun release(this: CString)
+    if alloc ; begin.free
+
+fun zeroTermString(ref: StringRef): CString
+    var c: CString
+    c.begin := ref.begin
+    c.alloc = false

@@ -1,0 +1,99 @@
+import std.ptr
+import std.staticArray
+import std.function
+
+datatype genSprVar0
+    ASTNode : Ptr(Char)
+    TranslationUnit : CXTranslationUnit
+using CXComment = genSprVar0
+[native("clang_Cursor_getParsedComment")]
+fun clang_Cursor_getParsedComment (sprArg0: CXCursor): CXComment
+using CXCommentKind = Int
+using CXComment_Null = 0
+using CXComment_Text = 1
+using CXComment_InlineCommand = 2
+using CXComment_HTMLStartTag = 3
+using CXComment_HTMLEndTag = 4
+using CXComment_Paragraph = 5
+using CXComment_BlockCommand = 6
+using CXComment_ParamCommand = 7
+using CXComment_TParamCommand = 8
+using CXComment_VerbatimBlockCommand = 9
+using CXComment_VerbatimBlockLine = 10
+using CXComment_VerbatimLine = 11
+using CXComment_FullComment = 12
+using CXCommentInlineCommandRenderKind = Int
+using CXCommentInlineCommandRenderKind_Normal = 0
+using CXCommentInlineCommandRenderKind_Bold = 1
+using CXCommentInlineCommandRenderKind_Monospaced = 2
+using CXCommentInlineCommandRenderKind_Emphasized = 3
+using CXCommentParamPassDirection = Int
+using CXCommentParamPassDirection_In = 0
+using CXCommentParamPassDirection_Out = 1
+using CXCommentParamPassDirection_InOut = 2
+[native("clang_Comment_getKind")]
+fun clang_Comment_getKind (sprArg0: CXComment): CXCommentKind
+[native("clang_Comment_getNumChildren")]
+fun clang_Comment_getNumChildren (sprArg0: CXComment): Int
+[native("clang_Comment_getChild")]
+fun clang_Comment_getChild (sprArg1: CXComment, sprArg0: Int): CXComment
+[native("clang_Comment_isWhitespace")]
+fun clang_Comment_isWhitespace (sprArg0: CXComment): Int
+[native("clang_InlineContentComment_hasTrailingNewline")]
+fun clang_InlineContentComment_hasTrailingNewline (sprArg0: CXComment): Int
+[native("clang_TextComment_getText")]
+fun clang_TextComment_getText (sprArg0: CXComment): CXString
+[native("clang_InlineCommandComment_getCommandName")]
+fun clang_InlineCommandComment_getCommandName (sprArg0: CXComment): CXString
+[native("clang_InlineCommandComment_getRenderKind")]
+fun clang_InlineCommandComment_getRenderKind (sprArg0: CXComment): CXCommentInlineCommandRenderKind
+[native("clang_InlineCommandComment_getNumArgs")]
+fun clang_InlineCommandComment_getNumArgs (sprArg0: CXComment): Int
+[native("clang_InlineCommandComment_getArgText")]
+fun clang_InlineCommandComment_getArgText (sprArg1: CXComment, sprArg0: Int): CXString
+[native("clang_HTMLTagComment_getTagName")]
+fun clang_HTMLTagComment_getTagName (sprArg0: CXComment): CXString
+[native("clang_HTMLStartTagComment_isSelfClosing")]
+fun clang_HTMLStartTagComment_isSelfClosing (sprArg0: CXComment): Int
+[native("clang_HTMLStartTag_getNumAttrs")]
+fun clang_HTMLStartTag_getNumAttrs (sprArg0: CXComment): Int
+[native("clang_HTMLStartTag_getAttrName")]
+fun clang_HTMLStartTag_getAttrName (sprArg1: CXComment, sprArg0: Int): CXString
+[native("clang_HTMLStartTag_getAttrValue")]
+fun clang_HTMLStartTag_getAttrValue (sprArg1: CXComment, sprArg0: Int): CXString
+[native("clang_BlockCommandComment_getCommandName")]
+fun clang_BlockCommandComment_getCommandName (sprArg0: CXComment): CXString
+[native("clang_BlockCommandComment_getNumArgs")]
+fun clang_BlockCommandComment_getNumArgs (sprArg0: CXComment): Int
+[native("clang_BlockCommandComment_getArgText")]
+fun clang_BlockCommandComment_getArgText (sprArg1: CXComment, sprArg0: Int): CXString
+[native("clang_BlockCommandComment_getParagraph")]
+fun clang_BlockCommandComment_getParagraph (sprArg0: CXComment): CXComment
+[native("clang_ParamCommandComment_getParamName")]
+fun clang_ParamCommandComment_getParamName (sprArg0: CXComment): CXString
+[native("clang_ParamCommandComment_isParamIndexValid")]
+fun clang_ParamCommandComment_isParamIndexValid (sprArg0: CXComment): Int
+[native("clang_ParamCommandComment_getParamIndex")]
+fun clang_ParamCommandComment_getParamIndex (sprArg0: CXComment): Int
+[native("clang_ParamCommandComment_isDirectionExplicit")]
+fun clang_ParamCommandComment_isDirectionExplicit (sprArg0: CXComment): Int
+[native("clang_ParamCommandComment_getDirection")]
+fun clang_ParamCommandComment_getDirection (sprArg0: CXComment): CXCommentParamPassDirection
+[native("clang_TParamCommandComment_getParamName")]
+fun clang_TParamCommandComment_getParamName (sprArg0: CXComment): CXString
+[native("clang_TParamCommandComment_isParamPositionValid")]
+fun clang_TParamCommandComment_isParamPositionValid (sprArg0: CXComment): Int
+[native("clang_TParamCommandComment_getDepth")]
+fun clang_TParamCommandComment_getDepth (sprArg0: CXComment): Int
+[native("clang_TParamCommandComment_getIndex")]
+fun clang_TParamCommandComment_getIndex (sprArg1: CXComment, sprArg0: Int): Int
+[native("clang_VerbatimBlockLineComment_getText")]
+fun clang_VerbatimBlockLineComment_getText (sprArg0: CXComment): CXString
+[native("clang_VerbatimLineComment_getText")]
+fun clang_VerbatimLineComment_getText (sprArg0: CXComment): CXString
+[native("clang_HTMLTagComment_getAsString")]
+fun clang_HTMLTagComment_getAsString (sprArg0: CXComment): CXString
+[native("clang_FullComment_getAsHTML")]
+fun clang_FullComment_getAsHTML (sprArg0: CXComment): CXString
+[native("clang_FullComment_getAsXML")]
+fun clang_FullComment_getAsXML (sprArg0: CXComment): CXString

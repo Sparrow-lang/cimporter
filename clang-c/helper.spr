@@ -1,0 +1,4 @@
+datatype CXTranslationUnitImpl
+    TUData : @Byte
+    StringPool : @Byte
+    Diagnostics : @Byte
